@@ -15,11 +15,11 @@
       * A Python script that will run on a local machine to simulate a real voting machine.]
       * First, it asks for the **election ID** and the **machine ID**.
       * Then, it generates random votes and sends them to a **voting logger** service.
-      * Finally, it will wait 
+      * Finally, it will wait for a response for 10 sec.
       * There will be three expected outputs: 
          1. **Already voted** if a vote with the same **voter ID** was processed before.
          2. **A vote was recorded successfully**.
-         3. **Time out** if the vote processing takes much longer than expected.
+         3. **Time out** if the vote processing takes much longer than expected (10 sec).
       * You can run multiple script instances but with different **machine ID**. 
    2. A **voting logger** service.
       * The service accesses a Redis server to store the IDs of the voters who have already been voted on.
