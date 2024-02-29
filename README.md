@@ -10,7 +10,8 @@
 
 ## Introduction 
 1. See the following video for [the foundations of microservices](https://www.youtube.com/watch?v=lL_j7ilk7rc).
-2. Read this document about [Event-driven architecture with Pub/Sub](https://cloud.google.com/solutions/event-driven-architecture-pubsub). Focus on the **event filter** technique, its advantages, limitations, and implementation. The microservices implemented in the milestone will use this technique to communicate.3. The milestone would implement a cloud solution for a cloud-based election system. It consists of:
+2. Read this document about [Event-driven architecture with Pub/Sub](https://cloud.google.com/solutions/event-driven-architecture-pubsub). Focus on the **event filter** technique, its advantages, limitations, and implementation. The microservices implemented in the milestone will use this technique to communicate.
+3. The milestone would implement a cloud solution for a cloud-based election system. It consists of:
    1. **A voting machine**
       * A Python script that will run on a local machine to simulate a real voting machine.]
       * First, it asks for the **election ID** and the **machine ID**.
@@ -34,8 +35,9 @@
       * Once, a **voting record** is received, it will be stored in a the **PostgreSQL** server.
       * Then a **A vote was recorded successfully** will be sent to the **voting machine**.
    4. A **Google Pub/sub** for handling the communication between the microservices.
-      * No IP or URL of the microservices are not be needed to exchange data. Only the **topic id** is needed.
+      * No IP or URL of the microservices is needed to exchange data. Only the **topic ID** is needed.
       * One topic will be used to exchange the data between the voting machine(s) and the two services.
-      * The messsage attributes will be set to filter the messages. Subscriptions will be created for the topic. Each of them will specify the condition for the recieved message (filter). Only messages that passes the filter conditions will be received by the Subscriper using the Subscriptions.
+      * The message attributes will be set to filter the messages. Subscriptions will be created for the topic. Each will specify the condition of the received message (filter). Only messages that pass the filter conditions will be received by the Subscriber using the Subscriptions.
+
 
      
