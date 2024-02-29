@@ -13,7 +13,7 @@
 2. Read this document about [Event-driven architecture with Pub/Sub](https://cloud.google.com/solutions/event-driven-architecture-pubsub). Focus on the **event filter** technique, its advantages, limitations, and implementation. The microservices implemented in the milestone will use this technique to communicate.
 3. The milestone would implement a cloud solution for a cloud-based election system. The following figure shows the architecture of the system
 
-   <img src="figures/arch.jpg" alt="System Architecture" width="610" />
+   <img src="figures/arch.jpg" alt="System Architecture" width="550" />
    
    It consists of:
    1. **A voting machine**
@@ -44,7 +44,7 @@
       * The message attributes will be set to filter the messages. Subscriptions will be created for the topic. Each will specify the condition of the received message (filter). Only messages with a matched filter conditions will be received by the Subscriber using the filtered subscription.
       * The attribute values set and filtered by each microservice as well as the message formats are shown in the following figure.
 
-        <img src="figures/subscription.jpg" alt="The message's attributes and format" width="610" />
+        <img src="figures/subscription.jpg" alt="The message's attributes and format" width="930" />
 
         adsd
 
