@@ -41,7 +41,11 @@
    4. A **Google Pub/sub** for handling the communication between the microservices.
       * No IP or URL of the microservices is needed to exchange data. Only the **topic ID** is needed.
       * One topic will be used to exchange the data between the voting machine(s) and the two services.
-      * The message attributes will be set to filter the messages. Subscriptions will be created for the topic. Each will specify the condition of the received message (filter). Only messages that pass the filter conditions will be received by the Subscriber using the Subscriptions.
+      * The message attributes will be set to filter the messages. Subscriptions will be created for the topic. Each will specify the condition of the received message (filter). Only messages with a matched filter conditions will be received by the Subscriber using the filtered subscription.
+      * The attribute values set and filtered by each microservice as well as the message formats are shown in the following figure.
 
+        <img src="figures/subscription.jpg" alt="The message's attributes and format" width="610" />
+
+        adsd
 
      
