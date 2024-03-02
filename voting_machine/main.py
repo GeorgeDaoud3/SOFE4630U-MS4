@@ -1,53 +1,69 @@
-import glob, os
-from google.cloud import pubsub_v1      #pip install google-cloud-pubsub  ##to install
-import time
-import json;
-import random
-import threading
-import uuid
+import glob                             # for searching for json file 
+import os                               # for setting and reading environment variables
+from google.cloud import pubsub_v1      # pip install google-cloud-pubsub  ##to install
+import time                             # for sleep function
+import json;                            # to deal with json objects
+import random                           # to generate random values
+import threading                        # for creating threads
+import uuid                             # to generate a unique identifier
 
+# Search the current directory for the JSON file (including the Google Pub/Sub credential) 
+# to set the GOOGLE_APPLICATION_CREDENTIALS environment variable.
 files=glob.glob("*.json")
 if len(files)>0:
    os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=files[0];
 
+#To do: Set the project ID, topic name and the subscription_id 
 project_id = ""
 topic_name = ""
+# Assign a different subscription ID for each voting machine.
+subscription_id = "ex_election-result-"+str(machineID)+"-sub_tmp2";
 
+# let the user enter the election and machine IDs
 electionID = int(input("Please enter the election ID (integer): "))
 machineID = int(input("Please enter the machine ID (integer): "))
 
-if "ELECTION_SUB_ID" in os.environ:
-    subscription_id = os.environ["ELECTION_SUB_ID"];
-else: 
-    subscription_id = "ex_election-result-"+str(machineID)+"-sub_tmp2"
-    
+debug=False;  # change to True for debugging
+if debug:
+    print(files[0]);
+    print(electionID);
+    print(machineID);
+    print(project_id);
+    print(subscription_id);
+    print(topic_name);
+
+# create a publisher and get the topic path for the publisher
 publisher = pubsub_v1.PublisherClient()
 topic_path = publisher.topic_path(project_id, topic_name)
 
-subscriber = pubsub_v1.SubscriberClient()
-subscription_path = subscriber.subscription_path(project_id, subscription_id)
-print(subscription_path)
-topic_path = 'projects/{project_id}/topics/{topic}'.format(
-    project_id=project_id,
-    topic=topic_name,  # Set this to something appropriate.
-)
-print(topic_path)
-sub_filter = "attributes.function=\"result\" AND attributes.machineID=\""+str(machineID)+"\"";
-print(sub_filter)
-
-messageRecieved=False;
-last_uuid='';
+messageRecieved=False;     # A flag to block the machine from sending a new votr unless the current vote is processed.
+last_uuid='';              # A universally unique identifier for the current vote
+# The callback function for handling received messages
 def callback(message: pubsub_v1.subscriber.message.Message) -> None:
-    global last_uuid,messageRecieved
+    # Make sure that the global variables are accessed from within the function.
+    global last_uuid, messageRecieved
+    
+    # get the message content
     message_data = json.loads(message.data);
     print(f"Received {message_data}.")
+    
+    # Check if the UUID matches the current vote
     if last_uuid==message_data['UUID'] :
-        messageRecieved=True;
+        messageRecieved=True; # unblock the main thread
     message_data = json.loads(message.data);
     message.ack()
     
-    
+subscriber = pubsub_v1.SubscriberClient()
+subscription_path = subscriber.subscription_path(project_id, subscription_id)
+print(subscription_path)
+
+sub_filter = "attributes.function=\"result\" AND attributes.machineID=\""+str(machineID)+"\"";
+if debug:
+    print(sub_filter)
+
+# The subscriber thread function
 def thread_function():
+    global subscriber, subscription_path, topic_path, sub_filter;
     with subscriber:
         try:
             subscription = subscriber.create_subscription(
@@ -62,25 +78,34 @@ def thread_function():
             streaming_pull_future.cancel()
             return
     
-    
+# Create and start the subscriber thread
 x = threading.Thread(target=thread_function)
 x.start()
-    
+
+# the main thread
 while True:
+    # randomally generate a new vote ( to mimic a real voting machine)
     last_uuid=str(uuid.uuid1())
-    messageRecieved=False;
     value={'machine_ID': machineID, 'voter_ID': int(random.random()*100), 
            'voting': int(random.random()*5), 'election_ID': electionID, 'UUID': last_uuid,
            'timestamp':int(1000*time.time())}
+           
+    messageRecieved=False; # A flag to block the main thread until result is recieved
+    
+    # Publish the voting message
     future = publisher.publish(topic_path, json.dumps(value).encode('utf-8'),function="submit vote");
     print("The message "+str(value)+" is sent")
+    
+    # Wait for a result, Time out will be signaled if no answer is received after 10 seconds
     c=1;
     while( messageRecieved==False):
         time.sleep(0.01);
         c=c+1;
         if(c==1000):
-            print('time out')
+            print('Time out')
             break;
+
+    # Send a new message after 1 second
     time.sleep(1);
     
     
