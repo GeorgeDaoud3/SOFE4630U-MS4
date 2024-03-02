@@ -12,7 +12,7 @@ files=glob.glob("*.json")
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=files[0];
 
 # Get the environment variables to set the crossponding variables
-redis_ip = os.environ["REDIS_IP"];
+redis_host = os.environ["REDIS_HOST"];
 project_id = os.environ["GCP_PROJECT"];
 subscription_id = os.environ["ELECTION_SUB_ID"];
 topic_name = os.environ["TOPIC_NAME"];
@@ -20,7 +20,7 @@ topic_name = os.environ["TOPIC_NAME"];
 debug=False;  # change to True for debugging
 if debug:
     print(files[0])
-    print(redis_ip)
+    print(redis_host)
     print(project_id)
     print(subscription_id)
     print(topic_name)
@@ -28,7 +28,7 @@ if debug:
 # Try to connect to the Redis server. If the connection is not established, the service will end.
 for i in range(60):
     try:
-        redis = redis.Redis(host=redis_ip, port=6379, db=0,password='election')
+        redis = redis.Redis(host=redis_host, port=6379, db=0,password='election')
         time.sleep(1);              # Wait for 1 second
         redis.ping()                # Check the connection
         print('Connected to Redis');
@@ -47,6 +47,8 @@ topic_path = publisher.topic_path(project_id, topic_name)
 
 # The callback function for handling received messages
 def callback(message: pubsub_v1.subscriber.message.Message) -> None:
+    # Make sure that the global variables are accessed from within the function.
+    global redis, publisher, topic_path
     # get the message content
     message_data = json.loads(message.data);
    

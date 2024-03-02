@@ -16,7 +16,7 @@ services:
   election-logger:
     image: logger
     environment:
-      - REDIS_IP=redis
+      - REDIS_HOST=redis
       - GCP_PROJECT=thematic-grin-413119
       - ELECTION_SUB_ID=ex_election-submit-sub
       - TOPIC_NAME=ex_election
