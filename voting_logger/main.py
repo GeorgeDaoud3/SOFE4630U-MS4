@@ -18,6 +18,8 @@ subscription_id = os.environ["ELECTION_SUB_ID"];
 topic_name = os.environ["TOPIC_NAME"];
 
 debug=False;  # change to True for debugging
+if "Debug" in os.environ:  # or define it as an environment variable
+    debug=True;
 if debug:
     print(files[0])
     print(redis_host)
@@ -58,20 +60,20 @@ def callback(message: pubsub_v1.subscriber.message.Message) -> None:
     # check for a voter in Redis
     redis_key=str(message_data["voter_ID"])+","+str(message_data['election_ID']));
     if(redis.exists(redis_key):
-        # if founf an "Already Voted!!!" message is produced associated with attributes (function="result", machineID)
+        # if found an "Already Voted!!!" message is produced associated with attributes (function="result", machineID)
         value={'result': 'Already Voted!!!','UUID': message_data['UUID']}
         future = publisher.publish(topic_path, json.dumps(value).encode('utf-8'),function="result",machineID=str(message_data['machine_ID']));
     else:
         # if not found, set a Redis key/value to prevent the voter from voting again
         redis.set(redis_key,message_data["timestamp"])
-        #eclude the voter ID and  produce the message to future process with attribute (function="record vote")
+        #Exclude the voter ID and  produce the message to future process with attribute (function="record vote")
         value={'machine_ID': message_data['machine_ID'], 'voting': message_data['voting'], 'election_ID': message_data['election_ID'], 'UUID': message_data['UUID']}        
         
         if debug:
-            print(value)
+            print(f"Sending {str(value)}.")
             
         future = publisher.publish(topic_path, json.dumps(value).encode('utf-8'),function="record vote");
-    # report the successful processed of the received messages
+    # Report To Google Pub/Sub the successful processed of the received messages
     message.ack()
     
 # create a subscriber to the subscriber for the project using the subscription_id
@@ -82,7 +84,7 @@ sub_filter = "attributes.function=\"submit vote\""  # the condition used for fil
 print(f"Listening for messages on {subscription_path}..\n")
 
 with subscriber:
-    # Create a subscription with the given ID and filter for the first time
+    # Create a subscription with the given ID and filter for the first time, if already not existed
     try:
         subscription = subscriber.create_subscription(
             request={"name": subscription_path, "topic": topic_path, "filter": sub_filter}
