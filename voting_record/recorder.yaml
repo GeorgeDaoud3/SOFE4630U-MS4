@@ -6,7 +6,7 @@ spec:
   #type: LoadBalancer
   selector:
     app: recorder
---------------------------------------------------------
+--- -----------------------------------------------------
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,7 +22,7 @@ spec:
         app: recorder
     spec:
       containers:
-        - image: $LOGGER_IMAGE
+        - image: $RECORDER_IMAGE
           name: recorder
           env:
             - name: POSTGRES_HOST
@@ -33,7 +33,7 @@ spec:
               value: election-record-sub
             - name: TOPIC_NAME
               value: election
---------------------------------------------------------
+--- -----------------------------------------------------
 apiVersion: v1
 kind: Service
 metadata:
@@ -44,7 +44,7 @@ spec:
     - port: 5432
   selector:
     app: postgres
---------------------------------------------------------
+--- -----------------------------------------------------
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -72,5 +72,5 @@ spec:
           ports:
             - containerPort: 5432
               name: postgres
---------------------------------------------------------
+--- -----------------------------------------------------
     
