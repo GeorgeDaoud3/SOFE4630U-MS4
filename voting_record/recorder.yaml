@@ -1,12 +1,12 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: recorder-service
-spec:
+#apiVersion: v1
+#kind: Service
+#metadata:
+  #name: recorder-service
+#spec:
   #type: LoadBalancer
-  selector:
-    app: recorder
----
+  #selector:
+    #app: recorder
+#---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
