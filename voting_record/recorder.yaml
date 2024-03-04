@@ -42,7 +42,6 @@ spec:
   #type: LoadBalancer
   ports:
     - port: 5432
-    - name: postgres
   selector:
     app: postgres
 ---
