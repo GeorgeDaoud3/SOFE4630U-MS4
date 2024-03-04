@@ -30,9 +30,9 @@ if debug:
 # Try to connect to the Redis server. If the connection is not established, the service will end.
 for i in range(60):
     try:
-        redis = redis.Redis(host=redis_host, port=6379, db=0,password='election')
+        Redis = redis.Redis(host=redis_host, port=6379, db=0,password='election')
         time.sleep(1);              # Wait for 1 second
-        redis.ping()                # Check the connection
+        Redis.ping()                # Check the connection
         print('Connected to Redis');
         failed=False; 
         break;
@@ -50,7 +50,7 @@ topic_path = publisher.topic_path(project_id, topic_name)
 # The callback function for handling received messages
 def callback(message: pubsub_v1.subscriber.message.Message) -> None:
     # Make sure that the global variables are accessed from within the function.
-    global redis, publisher, topic_path
+    global Redis, publisher, topic_path
     # get the message content
     message_data = json.loads(message.data);
    
@@ -59,13 +59,13 @@ def callback(message: pubsub_v1.subscriber.message.Message) -> None:
     
     # check for a voter in Redis
     redis_key=str(message_data["voter_ID"])+","+str(message_data['election_ID']);
-    if(redis.exists(redis_key)):
+    if(Redis.exists(redis_key)):
         # if found an "Already Voted!!!" message is produced associated with attributes (function="result", machineID)
         value={'result': 'Already Voted!!!','UUID': message_data['UUID']}
         future = publisher.publish(topic_path, json.dumps(value).encode('utf-8'),function="result",machineID=str(message_data['machine_ID']));
     else:
         # if not found, set a Redis key/value to prevent the voter from voting again
-        redis.set(redis_key,message_data["timestamp"])
+        Redis.set(redis_key,message_data["timestamp"])
         #Exclude the voter ID and  produce the message to future process with attribute (function="record vote")
         value={'machine_ID': message_data['machine_ID'], 'voting': message_data['voting'], 'election_ID': message_data['election_ID'], 'UUID': message_data['UUID']}        
         
