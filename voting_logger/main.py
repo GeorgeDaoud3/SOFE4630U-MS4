@@ -59,7 +59,7 @@ def callback(message: pubsub_v1.subscriber.message.Message) -> None:
     
     # check for a voter in Redis
     redis_key=str(message_data["voter_ID"])+","+str(message_data['election_ID']);
-    if(redis.exists(redis_key):
+    if(redis.exists(redis_key)):
         # if found an "Already Voted!!!" message is produced associated with attributes (function="result", machineID)
         value={'result': 'Already Voted!!!','UUID': message_data['UUID']}
         future = publisher.publish(topic_path, json.dumps(value).encode('utf-8'),function="result",machineID=str(message_data['machine_ID']));
