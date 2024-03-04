@@ -58,7 +58,7 @@ def callback(message: pubsub_v1.subscriber.message.Message) -> None:
         print(f"Received {message_data}.")
     
     # check for a voter in Redis
-    redis_key=str(message_data["voter_ID"])+","+str(message_data['election_ID']));
+    redis_key=str(message_data["voter_ID"])+","+str(message_data['election_ID']);
     if(redis.exists(redis_key):
         # if found an "Already Voted!!!" message is produced associated with attributes (function="result", machineID)
         value={'result': 'Already Voted!!!','UUID': message_data['UUID']}
