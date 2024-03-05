@@ -75,18 +75,25 @@
 ## The logger service
 ### The python Code
 This subsection will go through the Python script at [voting_logger/main.py](voting_logger/main.py). 
-1. **lines 11: 12**: search for a JSON file in the current directory and use it for GCP credentials. It assumes that only a single JSON file exists in the current directory.
-2. **lines 15: 18**: use the values of predefined environment variables to set the values of redis_host, project_id, subscription_id, and topic_name variables. To prevent having the values of the variables hard coded in the code.
+1. **Lines 11: 12** : search for a JSON file in the current directory and use it for GCP credentials. It assumes that only a single JSON file exists in the current directory.
+2. **Lines 15: 18** : use the values of predefined environment variables to set the values of redis_host, project_id, subscription_id, and topic_name variables. To prevent having the values of the variables hard coded in the code.
    
    <img src="figures/logger1.jpg" alt="voting logger script (lines 11:18)" width="888" />
 
-3. **lines 20: 22**: define a **debug** variable and initialize it by **False**. However, it can be changed to **True** in the code or by setting another environment variable, **DEBUG**. If it is set to **True**, logs and information will be printed for debugging reasons, as in lines 23:28.
+3. **Lines 20: 22** : define a **debug** variable and initialize it by **False**. However, it can be changed to **True** in the code or by setting another environment variable, **DEBUG**. If it is set to **True**, logs and information will be printed for debugging reasons, as in lines 23:28.
    
-   <img src="figures/logger2.jpg" alt="voting logger script (lines 11:18)" width="690" />
+   <img src="figures/logger2.jpg" alt="voting logger script (lines 20:28)" width="690" />
 
-4. 
+4. **Lines 30: 44** : Repeatedly try to connect to the Redis server each second. The service will terminate if the connection can't be established in a minute. 
 
-   <img src="figures/logger3.jpg" alt="voting logger script (lines 11:18)" width="690" />
+   <img src="figures/logger3.jpg" alt="voting logger script (lines 30:44)" width="930" />
+   
+5. **Lines 79: 101**: create a subscription and use it to subscribe to the topic.
+   1.  **Line 80** : create a **subscription path** using the **project ID** and the **subscription ID**.
+   2.  **line 81** : create a filter for the subscription (**function="submit vote"**).
+   3.  **line 89:90** : create a subscription for the **subscription path** using the filte.
+
+   <img src="figures/logger4.jpg" alt="voting logger script (lines 11:18)" width="690" />
    
 ### Deployment of the service
 
