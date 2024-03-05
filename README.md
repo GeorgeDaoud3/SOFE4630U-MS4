@@ -73,7 +73,8 @@
       echo $REPO
       ```
 ## The logger service
-### The python CodeThis subsection will go through the Python script at [voting_logger/main.py](voting_logger/main.py). 
+### The python Code
+This subsection will go through the Python script at [voting_logger/main.py](voting_logger/main.py). 
 1. **lines 11: 12**: search for a JSON file in the current directory and use it for GCP credentials. It assumes that only a single JSON file exists in the current directory.
 2. **lines 15: 18**: use the values of predefined environment variables to set the values of redis_host, project_id, subscription_id, and topic_name variables. To prevent having the values of the variables hard coded in the code.
    
