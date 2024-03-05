@@ -80,13 +80,14 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
    
    <img src="figures/logger1.jpg" alt="voting logger script (lines 11:18)" width="888" />
 
-3.**lines 20: 22**: define a **debug** variable and initialize it by **False**. However, it can be changed to **True** in the code or by setting another environment variable, **DEBUG**. If it is set to **True**, logs and information will be printed for debugging reasons, as in lines 23:28.
+3. **lines 20: 22**: define a **debug** variable and initialize it by **False**. However, it can be changed to **True** in the code or by setting another environment variable, **DEBUG**. If it is set to **True**, logs and information will be printed for debugging reasons, as in lines 23:28.
    
    <img src="figures/logger2.jpg" alt="voting logger script (lines 11:18)" width="690" />
 
 4. 
 
    <img src="figures/logger3.jpg" alt="voting logger script (lines 11:18)" width="690" />
+   
 ### Deployment of the service
 
      
