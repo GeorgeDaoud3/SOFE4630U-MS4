@@ -1,7 +1,7 @@
 import glob                             # for searching for json file 
 import os                               # for setting and reading environment variables
 from google.cloud import pubsub_v1      # pip install google-cloud-pubsub  ##to install
-import psycopg                          # pip install psycopg2   ##to install postgreSQL client
+import psycopg2                          # pip install psycopg2   ##to install postgreSQL client
 import time                             # for sleep function
 import json;                            # to deal with json objects
 import sys;                             # fot exit function
