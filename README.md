@@ -60,7 +60,7 @@
       <img src="figures/createRepository.jpg" alt="create a new repo" width="360" />
    4. open the **sofe4630u** repository and copy the repo path.
 
-      <img src="figures/repoPath.jpg" alt="create a new repo" width="360" />
+      <img src="figures/repoPath.jpg" alt="create a new repo" width="900" />
 
       and save it in an environment variable
       ``` cmd
