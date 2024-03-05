@@ -45,7 +45,18 @@
       * The attribute values set and filtered by each microservice as well as the message formats are shown in the following figure.
 
         <img src="figures/subscription.jpg" alt="The message's attributes and format" width="930" />
-
-        adsd
+## settng up the GCP project
+1. Create a new topic in Google Pub/Sub with a default subscription; name it **election**.
+2. Create a service account with the Google Pub/Sub admin rule. Create and download a JSON file with the corresponding credentials. ( **or use the one already created in MS2**)
+3. As each service will be containerized, a docker repository is needed to host the docker images of the **logger** and **recorder** services.
+   1. Search for Artifact Registry
+      <img src="figures/artifactRegistry.jpg" alt="Search for Artifact Registry" width="795" />
+   2. In the **repositories** tab, press the + button to create a new repo.
+      <img src="figures/repositories.jpg" alt="create a new repo" width="905" />
+   3. Name it **sofe4630u** and make sure that the type is set to **Docker**. Set the region to **northamerica-northeast2 (Toronto)**. Finally, press **create**.
+      <img src="figures/createRepository.jpg" alt="create a new repo" width="905" />
+## The logger service
+### The python Code
+### Deployment of the service
 
      
