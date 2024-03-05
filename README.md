@@ -50,11 +50,28 @@
 2. Create a service account with the Google Pub/Sub admin rule. Create and download a JSON file with the corresponding credentials. ( **or use the one already created in MS2**)
 3. As each service will be containerized, a docker repository is needed to host the docker images of the **logger** and **recorder** services.
    1. Search for Artifact Registry
+      
       <img src="figures/artifactRegistry.jpg" alt="Search for Artifact Registry" width="795" />
    2. In the **repositories** tab, press the + button to create a new repo.
+    
       <img src="figures/repositories.jpg" alt="create a new repo" width="905" />
    3. Name it **sofe4630u** and make sure that the type is set to **Docker**. Set the region to **northamerica-northeast2 (Toronto)**. Finally, press **create**.
-      <img src="figures/createRepository.jpg" alt="create a new repo" width="905" />
+
+      <img src="figures/createRepository.jpg" alt="create a new repo" width="360" />
+   4. open the **sofe4630u** repository and copy the repo path.
+
+      <img src="figures/repoPath.jpg" alt="create a new repo" width="360" />
+
+      and save it in an environment variable
+      ``` cmd
+      REPO=<REPO full path>
+      echo $REPO
+      ```
+      Or you can search for the the full path using
+      ``` cmd
+      REPO=$(gcloud artifacts repositories list --location northamerica-northeast2 --format 'json' | grep sofe4630 | grep -Po '"name": "\K[^"]*')
+      echo $REPO
+      ```
 ## The logger service
 ### The python Code
 ### Deployment of the service
