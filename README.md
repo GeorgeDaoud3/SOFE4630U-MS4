@@ -84,7 +84,9 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
    
    <img src="figures/logger2.jpg" alt="voting logger script (lines 11:18)" width="690" />
 
+4. 
 
+   <img src="figures/logger3.jpg" alt="voting logger script (lines 11:18)" width="690" />
 ### Deployment of the service
 
      
