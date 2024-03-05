@@ -16,12 +16,13 @@ if len(files)>0:
 #To do: Set the project ID, topic name and the subscription_id 
 project_id = ""
 topic_name = ""
-# Assign a different subscription ID for each voting machine.
-subscription_id = "election-result-"+str(machineID)+"-sub";
 
 # let the user enter the election and machine IDs
 electionID = int(input("Please enter the election ID (integer): "))
 machineID = int(input("Please enter the machine ID (integer): "))
+
+# Assign a different subscription ID for each voting machine.
+subscription_id = "election-result-"+str(machineID)+"-sub";
 
 debug=False;  # change to True for debugging
 if debug:
