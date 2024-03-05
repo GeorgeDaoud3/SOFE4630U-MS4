@@ -41,10 +41,12 @@
    4. A **Google Pub/sub** for handling the communication between the microservices.
       * No IP or URL of the microservices is needed to exchange data. Only the **topic ID** is needed.
       * One topic will be used to exchange the data between the voting machine(s) and the two services.
+      * A universally unique identifier (UUID) will be used to identify the vote during the processing by the services.
       * The message attributes will be set to filter the messages. Subscriptions will be created for the topic. Each will specify the condition of the received message (filter). Only messages with a matched filter conditions will be received by the Subscriber using the filtered subscription.
       * The attribute values set and filtered by each microservice as well as the message formats are shown in the following figure.
 
         <img src="figures/subscription.jpg" alt="The message's attributes and format" width="930" />
+        
 ## settng up the GCP project
 1. Create a new topic in Google Pub/Sub with a default subscription; name it **election**.
 2. Create a service account with the Google Pub/Sub admin rule. Create and download a JSON file with the corresponding credentials. ( **or use the one already created in MS2**)
@@ -78,15 +80,15 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
 1. **Lines 11: 12** : search for a JSON file in the current directory and use it for GCP credentials. It assumes that only a single JSON file exists in the current directory.
 2. **Lines 15: 18** : use the values of predefined environment variables to set the values of redis_host, project_id, subscription_id, and topic_name variables. To prevent having the values of the variables hard coded in the code.
    
-   <img src="figures/logger1.jpg" alt="voting logger script (lines 11:18)" width="888" />
+   <img src="figures/logger1.jpg" alt="voting logger script (lines 11:18)" width="710" />
 
 3. **Lines 20: 22** : define a **debug** variable and initialize it by **False**. However, it can be changed to **True** in the code or by setting another environment variable, **DEBUG**. If it is set to **True**, logs and information will be printed for debugging reasons, as in lines 23:28.
    
-   <img src="figures/logger2.jpg" alt="voting logger script (lines 20:28)" width="690" />
+   <img src="figures/logger2.jpg" alt="voting logger script (lines 20:28)" width="550" />
 
 4. **Lines 30: 44** : Repeatedly try to connect to the Redis server each second. The service will terminate if the connection can't be established in a minute. 
 
-   <img src="figures/logger3.jpg" alt="voting logger script (lines 30:44)" width="930" />
+   <img src="figures/logger3.jpg" alt="voting logger script (lines 30:44)" width="750" />
    
 5. **Lines 79: 101**: create a subscription and use it to subscribe to the topic.
    1. **Line 80** : create a **subscription path** using the **project ID** and the **subscription ID**.
@@ -95,14 +97,26 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
    4. **Lines 88:93** : create a **subscription** if it does not exist. If it already exists, the creation will fail, an exception will be thrown which will be handled by the except block.
    5. **Lines 97:101** : subscribe to the topic using the **subscription** and set the callback function to handle the received messages to **callback**.
 
-   <img src="figures/logger4.jpg" alt="voting logger script (lines 11:18)" width="1100" />
-   
-6. **Lines 79: 101**: The callback function to handle the recieved message.
-   1.    
-   
-   <img src="figures/logger5.jpg" alt="voting logger script (lines 11:18)" width="1100" />
+   <img src="figures/logger4.jpg" alt="voting logger script (lines 11:18)" width="880" />
+
+6. **Lines 46: 77**: The callback function to handle the received message.
+   1. **Line 55** : serialize the received message
+   2. **Line 61** : generate a key value for voter by combining the **voter ID** and the **election ID**.
+   3. **Line 62** : check if the key already exists in the Redis server
+   4. **Lines 63:65** : if the key exists, an **Already Voted!!!** message will be produced with attributes (**function**="result",**machineID**=...) to be received by the **voting machine**.
+   5. **Lines 67:75** : if the key doesn't exist, the voter ID will be excluded, and the updated message will be produced to the topic with attributes (**function**=" record vote") to be processed by the **voting recorder** service. Please note that:
+      1. **Line 47** : create the producer  
+      2. **Line 48** : define the full path to the topic
+      3. **line 68** : will store the voting time associated with the key created in line 61 in the Redis server to prevent the voter from voting again.
+
+   <img src="figures/logger5.jpg" alt="voting logger script (lines 11:18)" width="880" />
    
 ### Deployment of the service
+1. Clone the GitHub repo in the GCP console.
+   ``` cmd
+   cd 
+   ```
+3. 
 
 
 
