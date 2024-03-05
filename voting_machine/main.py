@@ -17,7 +17,7 @@ if len(files)>0:
 project_id = ""
 topic_name = ""
 # Assign a different subscription ID for each voting machine.
-subscription_id = "ex_election-result-"+str(machineID)+"-sub_tmp2";
+subscription_id = "election-result-"+str(machineID)+"-sub";
 
 # let the user enter the election and machine IDs
 electionID = int(input("Please enter the election ID (integer): "))
