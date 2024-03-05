@@ -89,12 +89,21 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
    <img src="figures/logger3.jpg" alt="voting logger script (lines 30:44)" width="930" />
    
 5. **Lines 79: 101**: create a subscription and use it to subscribe to the topic.
-   1.  **Line 80** : create a **subscription path** using the **project ID** and the **subscription ID**.
-   2.  **line 81** : create a filter for the subscription (**function="submit vote"**).
-   3.  **line 89:90** : create a subscription for the **subscription path** using the filte.
+   1. **Line 80** : create a **subscription path** using the **project ID** and the **subscription ID**.
+   2. **Line 81** : create a filter for the subscription (**function="submit vote"**).
+   3. **Lines 89:90** : create a **subscription** for the **subscription path** using the filter.
+   4. **Lines 88:93** : create a **subscription** if it does not exist. If it already exists, the creation will fail, an exception will be thrown which will be handled by the except block.
+   5. **Lines 97:101** : subscribe to the topic using the **subscription** and set the callback function to handle the received messages to **callback**.
 
-   <img src="figures/logger4.jpg" alt="voting logger script (lines 11:18)" width="690" />
+   <img src="figures/logger4.jpg" alt="voting logger script (lines 11:18)" width="1100" />
+   
+6. **Lines 79: 101**: The callback function to handle the recieved message.
+   1.    
+   
+   <img src="figures/logger5.jpg" alt="voting logger script (lines 11:18)" width="1100" />
    
 ### Deployment of the service
+
+
 
      
