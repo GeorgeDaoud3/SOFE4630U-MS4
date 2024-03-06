@@ -233,14 +233,25 @@ This subsection will go through the Python script at [voting_record/main.py](vot
       ```
 3. Also, we need to create a Docker image for the PostgreSQL server to create an initial table within the server.
    1. To create an initial table, we must execute a SQL statement found at [voting_record/postgres/CreateTable.sql](voting_record/postgres/CreateTable.sql) at the docker container during initialization. It's much like standard SQL except for the keyword, **serial**, which will auto-increment the values in the **id** column.
+      
       <img src="figures/postgres_table_sql.jpg" alt="PostgreSQL script to create a table" width="390" />
+     
    2. The Dockerfile is simple and can be found at [voting_record/postgres/Dockerfile](voting_record/postgres/Dockerfile). It consists of two lines
       * **Line 1**, the base image of PostgreSQL
       * **Line 2** copy the **CreateTable.sql** to the directory **/docker-entrypoint-initdb.d/** in the image. Any SQL script in that directory will be executed during the Docker container initialization.
+    
       <img src="figures/postgresDockerfile.jpg" alt="Dockerfile for the PostgreSQL server" width="500" />
+
+   3. Now, let's create and push the Docker image to the repository.
+       ``` cmd
+      REPO=<REPO full path>
+      POSTGRES_IMAGE=$REPO/postgres:election
+      echo $POSTGRES_IMAGE
       
+      gcloud builds submit -t $POSTGRES_IMAGE
+      ```
 4. Deploy the voting recorder service and the PostgreSQL server using GKE
-   1. the [voting_recorder/record.yaml](voting_recorder/record.yaml) file contains the deployment instructions. It can be divided into
+   1. the [voting_record/recorder.yaml](voting_record/recorder.yaml) file contains the deployment instructions. It can be divided into
       * **Lines 29:61** : deploy the Redis server with a single replica for data consistency using **election** as a password. The most important parameter is the service name at line 32 (**redis**). Other GKE pods will use it as a hostname to access the Redis server.
         
         <img src="figures/loggerk8s1.jpg" alt="Redis deployment" width="400" />
