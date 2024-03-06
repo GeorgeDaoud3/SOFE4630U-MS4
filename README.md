@@ -205,7 +205,7 @@ This subsection will go through the Python script at [voting_record/main.py](vot
    <img src="figures/recorder4.jpg" alt="voting recorder script (lines 54:82)" width="1300" />
    
 ### The Deployment of the Service
-1. Upload <a href ="#cred"> the JSON file with GCP credential </a> to the path **~/SOFE4630U-MS4/voting_logger**.
+1. Upload <a href ="#cred"> the JSON file with GCP credential </a> to the path **~/SOFE4630U-MS4/voting_record**.
 2. Containerize the service
    1. The Dockerfile at [voting_record/Dockerfile](voting_record/Dockerfile) looks like the Dockerfile for the logger service except
       **Line 2: ** installs the psycopg2 which is a PostgreSQL client Python Library
@@ -226,14 +226,20 @@ This subsection will go through the Python script at [voting_record/main.py](vot
 
       <img src="figures/recorderls.jpg" alt="Dockerfile for the voting recorder service" width="850" />
       
-   4. Execute the instruction in the Dockerfile to generate the image and push it to artifact repository. this is analternative way other than thr **docker build** and **docker push** used in the logger service.
+   4. Execute the instruction in the Dockerfile to generate the image and push it to the artifact repository. This is an alternative to the **docker build** and **docker push** that were used in the logger service.
       ``` cmd
       cd ~/SOFE4630U-MS4/voting_record
       gcloud builds submit -t $RECORDER_IMAGE 
       ```
-3. Also, we need to create a Docker image to the PostgreSQL to create an initial table within the server.
-   
-5. Deploy the voting recorder service and the PostgreSQL server using GKE
+3. Also, we need to create a Docker image for the PostgreSQL server to create an initial table within the server.
+   1. To create an initial table, we must execute a SQL statement found at [voting_record/postgres/CreateTable.sql](voting_record/postgres/CreateTable.sql) at the docker container during initialization. It's much like standard SQL except for the keyword, **serial**, which will auto-increment the values in the **id** column.
+      <img src="figures/postgres_table_sql.jpg" alt="PostgreSQL script to create a table" width="390" />
+   2. The Dockerfile is simple and can be found at [voting_record/postgres/Dockerfile](voting_record/postgres/Dockerfile). It consists of two lines
+      * **Line 1**, the base image of PostgreSQL
+      * **Line 2** copy the **CreateTable.sql** to the directory **/docker-entrypoint-initdb.d/** in the image. Any SQL script in that directory will be executed during the Docker container initialization.
+      <img src="figures/postgresDockerfile.jpg" alt="Dockerfile for the PostgreSQL server" width="500" />
+      
+4. Deploy the voting recorder service and the PostgreSQL server using GKE
    1. the [voting_recorder/record.yaml](voting_recorder/record.yaml) file contains the deployment instructions. It can be divided into
       * **Lines 29:61** : deploy the Redis server with a single replica for data consistency using **election** as a password. The most important parameter is the service name at line 32 (**redis**). Other GKE pods will use it as a hostname to access the Redis server.
         
