@@ -69,7 +69,7 @@
       REPO=<REPO full path>
       echo $REPO
       ```
-## The logger service
+## The Logger Service
 ### The Service Python Script
 This subsection will go through the Python script at [voting_logger/main.py](voting_logger/main.py). 
 1. **Lines 11: 12** : search for a JSON file in the current directory and use it for GCP credentials. It assumes that only a single JSON file exists in the current directory.
@@ -105,6 +105,110 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
       3. **line 68** : will store the voting time associated with the key created in line 61 in the Redis server to prevent the voter from voting again.
 
    <img src="figures/logger5.jpg" alt="voting logger script (lines 46:77)" width="1065" />
+   
+### The Deployment of the Service
+1. Clone the GitHub repo in the GCP console.
+   ``` cmd
+   cd ~
+   git clone https://github.com/GeorgeDaoud3/SOFE4630U-MS4.git
+   ```
+2. Upload <a href ="#cred"> the JSON file with GCP credential </a> to the path **~/SOFE4630U-MS4/voting_logger**.
+3. Containerize the service
+   1. The Dockerfile at [voting_logger/Dockerfile](voting_logger/Dockerfile) contains the instruction to containerize the service.
+      **Line 1: ** uses a Linux with an installed Python 3.9 as the basic image.
+      **Line 2: ** installs the required Python libraries on the base image.
+      **Line 3: ** copies all the JSON files (assumed to be one) from the current directory of the GCP console to the working directory in the base image.
+      **Line 4: ** copies the Python file (main.py) from the current directory of the GCP console to the working directory in the base image.
+      **Line 5: ** runs the Python script and displays any printed messages in the container logs.
+
+      <img src="figures/loggerDockerfile.jpg" alt="Dockerfile for the voting logger service" width="425" />
+      
+   2. The docker image name will be prefixed by the artifact repository. Run the following commands after replacing **&lt;REPO full path&gt;** by the <a href="#sofe4630u"> repository full path</a>.
+      ``` cmd
+      REPO=<REPO full path>
+      LOGGER_IMAGE=$REPO/logger
+      echo $LOGGER_IMAGE
+      ```
+   3. Make sure that the path **~/SOFE4630U-MS4/voting_logger** contains the JSON file of the GCP credential, the main.py script, and the Dockerfile.
+      ``` cmd
+      cd ~/SOFE4630U-MS4/voting_logger
+      ls
+      ```
+
+      <img src="figures/loggerls.jpg" alt="Dockerfile for the voting logger service" width="750" />
+      
+   4. Execute the instruction in the Dockerfile and generate the image
+      ``` cmd
+      cd ~/SOFE4630U-MS4/voting_logger
+      docker build . -t $LOGGER_IMAGE
+      ```
+   5. The docker image is created and stored in the GCP console. This is a temporary and local storage. It should be publicly available by pushing it to the artifact repository for use in a Kubernetes deployment.
+      ``` cmd
+      docker push $LOGGER_IMAGE
+      ```
+      **Note**: The prefix of the image name is the path into which the repository is to be pushed.
+      
+4. Deploy the voting logger service and the Redis server using GKE
+   1. the [voting_logger/logger.yaml](voting_logger/logger.yaml) file contains the deployment instructions. It can be divided into
+      * **Lines 29:61** : deploy the Redis server with a single replica for data consistency using **election** as a password. The most important parameter is the service name at line 32 (**redis**). Other GKE pods will use it as a hostname to access the Redis server.
+        
+        <img src="figures/loggerk8s1.jpg" alt="Redis deployment" width="400" />
+        
+      * **Lines 2:27** : The deployment of three replicas of the service. Four environment variables are defined: REDIS_HOST, GCP_PROJECT, ELECTION_SUB_ID, and TOPIC_NAME. Their values will be accessed by the main.py script, as shown in the following figure. Note that the values **$PROJECT** and **$LOGGER_IMAGE** in line 23 and 17 will be passed to the YAML file before been deployed.
+
+        <img src="figures/loggerk8s2.jpg" alt="the voting logger service deployment" width="1025" />
+
+   2. the following command will substitute in the YAML file with the crossponding environment variables and then will deploy the service and the Redis server.
+      ``` cmd
+      REPO=<REPO full path>
+      LOGGER_IMAGE=$REPO/logger
+      PROJECT=$(gcloud config list project --format "value(core.project)")
+      
+      cd ~/SOFE4630U-MS4/voting_logger
+      PROJECT=$PROJECT LOGGER_IMAGE=$LOGGER_IMAGE envsubst < logger.yaml | kubectl apply -f -
+      ```
+5. To check the deployment, get the list of pods and make sure that they all available. Then, look for a pod for any of the service replicas and prints its logs.
+      ```cmd
+      kubectl get pods
+      kubectl logs <pod-name>
+      ```
+      It should look like
+   
+      <img src="figures/loggerlogs.jpg" alt="the logs of the voting logger service" width="1025" />
+      
+6. Finally if you want to stop the service (**Don't run it now**)
+   ```cmd
+   cd ~/SOFE4630U-MS4/voting_logger
+   kubectl delete -f logger.yaml
+   ```
+
+## The Voting Recorder Service
+### The Service Python Script
+This subsection will go through the Python script at [voting_recorder/main.py](voting_recorder/main.py). It's similar to that used for the logger service except
+
+1. **Lines 15** : use the values of predefined environment variables to set the values of the postgres_host for the PostgreSQL server.
+   
+   <img src="figures/recorder1.jpg" alt="voting recorder script (lines 14:18)" width="640" />
+
+2. **Lines 30: 48** : Repeatedly try to connect to the PostgreSQL server each ten seconds. The service will terminate if the connection can't be established in ten minutes. 
+
+   <img src="figures/recorder2.jpg" alt="voting recorder script (lines 30:48)" width="1000" />
+   
+5. **Lines 84: 106**: create a subscription and use it to subscribe to the topic using the filter for the subscription (**function="record vote"**).
+   
+   <img src="figures/recorder3.jpg" alt="voting recorder script (lines 84:106)" width="1080" />
+
+6. **Lines 54: 82**: The callback function to handle the received message.
+   1. **Line 55** : serialize the received message
+   2. **Line 61** : generate a key value for voter by combining the **voter ID** and the **election ID**.
+   3. **Line 62** : check if the key already exists in the Redis server
+   4. **Lines 63:65** : if the key exists, an **Already Voted!!!** message will be produced with attributes (**function**="result",**machineID**=...) to be received by the **voting machine**.
+   5. **Lines 67:75** : if the key doesn't exist, the voter ID will be excluded, and the updated message will be produced to the topic with attributes (**function**="record vote") to be processed by the **voting recorder** service. Please note that:
+      1. **Line 47** : create the producer  
+      2. **Line 48** : define the full path to the topic
+      3. **line 68** : will store the voting time associated with the key created in line 61 in the Redis server to prevent the voter from voting again.
+
+   <img src="figures/recorder4.jpg" alt="voting recorder script (lines 54:82)" width="1300" />
    
 ### The Deployment of the Service
 1. Clone the GitHub repo in the GCP console.
