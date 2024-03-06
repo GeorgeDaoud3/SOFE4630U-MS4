@@ -144,6 +144,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
       
    4. Execute the instruction in the Dockerfile and generate the image
       ``` cmd
+      cd ~/SOFE4630U-MS4/voting_logger
       docker build . -t $LOGGER_IMAGE
       ```
    5. The docker image is created and stored in the GCP console. This is a temporary and local storage. It should be publicly available by pushing it to the artifact repository for use in a Kubernetes deployment.
