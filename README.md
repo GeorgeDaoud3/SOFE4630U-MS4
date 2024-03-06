@@ -184,7 +184,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
 
 ## The Voting Recorder Service
 ### The Service Python Script
-This subsection will go through the Python script at [voting_recorder/main.py](voting_recorder/main.py). It's similar to that used for the logger service except
+This subsection will go through the Python script at [voting_record/main.py](voting_record/main.py). It's similar to that used for the logger service except
 
 1. **Lines 15** : use the values of predefined environment variables to set the values of the postgres_host for the PostgreSQL server.
    
