@@ -158,7 +158,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
 
         <img src="figures/loggerk8s2.jpg" alt="the voting logger service deployment" width="1025" />
 
-   2. the following command will substitute in the YAML file with the crossponding environment variables and then will deploy the service and the Redis server.
+   2. the following command will substitute **$PROJECT** and **$LOGGER_IMAGE** in the YAML file with the crossponding environment variables and then will deploy the service and the Redis server.
       ``` cmd
       REPO=<REPO full path>
       LOGGER_IMAGE=$REPO/logger
@@ -253,22 +253,23 @@ This subsection will go through the Python script at [voting_record/main.py](vot
       ```
 4. Deploy the voting recorder service and the PostgreSQL server using GKE
    1. the [voting_record/recorder.yaml](voting_record/recorder.yaml) file contains the deployment instructions. It can be divided into
-      * **Lines 29:61** : deploy the Redis server with a single replica for data consistency using **election** as a password. The most important parameter is the service name at line 32 (**redis**). Other GKE pods will use it as a hostname to access the Redis server.
+      * **Lines 27:65** : deploy the PostgreSQL server with a single replica for data consistency using **admin** as a user, **adminpassword** as a password, and **election** as an initial database. The most important parameter is the service name at line 31 (**postgres**). Other GKE pods will use it as a hostname to access the PostgreSQL server. Also, note that an environment variable will replace **$RECORDER_IMAGE** at line 53 before deploying.
         
-        <img src="figures/loggerk8s1.jpg" alt="Redis deployment" width="400" />
+        <img src="figures/recorderk8s1.jpg" alt="PostgreSQL deployment" width="400" />
         
-      * **Lines 2:27** : The deployment of three replicas of the service. Four environment variables are defined: REDIS_HOST, GCP_PROJECT, ELECTION_SUB_ID, and TOPIC_NAME. Their values will be accessed by the main.py script, as shown in the following figure. Note that the values **$PROJECT** and **$LOGGER_IMAGE** in line 23 and 17 will be passed to the YAML file before been deployed.
+      * **Lines 1:26** : The deployment of three replicas of the service. Four environment variables are defined: POSTGRES_HOST, GCP_PROJECT, ELECTION_SUB_ID, and TOPIC_NAME. Their values will be accessed by the main.py script, as shown in the following figure. Note that the values **$PROJECT** and **$RECORDER_IMAGE** in line 23 and 16 will be passed to the YAML file before been deployed.
 
-        <img src="figures/loggerk8s2.jpg" alt="the voting logger service deployment" width="1025" />
+        <img src="figures/recorderk8s2.jpg" alt="the voting logger service deployment" width="1130" />
 
-   2. the following command will substitute in the YAML file with the crossponding environment variables and then will deploy the service and the Redis server.
+   2. the following command will substitute **$PROJECT**, **$POSTGRES_IMAGE**, and **$RECORDER_IMAGE** in the YAML file with the crossponding environment variables and then will deploy the service and the PostgreSQL server.
       ``` cmd
       REPO=<REPO full path>
-      LOGGER_IMAGE=$REPO/logger
+      RECORDER_IMAGE=$REPO/recorder
+      POSTGRES_IMAGE=$REPO/postgres:election
       PROJECT=$(gcloud config list project --format "value(core.project)")
       
-      cd ~/SOFE4630U-MS4/voting_logger
-      PROJECT=$PROJECT LOGGER_IMAGE=$LOGGER_IMAGE envsubst < logger.yaml | kubectl apply -f -
+      cd ~/SOFE4630U-MS4/voting_record
+      POSTGRES_IMAGE=$POSTGRES_IMAGE PROJECT=$PROJECT RECORDER_IMAGE=$RECORDER_IMAGE envsubst < recorder.yaml | kubectl apply -f -
       ```
 6. To check the deployment, get the list of pods and make sure that they all available. Then, look for a pod for any of the service replicas and prints its logs.
       ```cmd
@@ -277,10 +278,10 @@ This subsection will go through the Python script at [voting_record/main.py](vot
       ```
       It should look like
    
-      <img src="figures/loggerlogs.jpg" alt="the logs of the voting logger service" width="1025" />
+      <img src="figures/recorderlogs.jpg" alt="the logs of the voting logger service" width="735" />
       
 7. Finally if you want to stop the service (**Don't run it now**)
    ```cmd
-   cd ~/SOFE4630U-MS4/voting_logger
-   kubectl delete -f logger.yaml
+   cd ~/SOFE4630U-MS4/voting_record
+   kubectl delete -f recorder.yaml
    ```
