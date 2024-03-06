@@ -148,4 +148,12 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
       ```
       **Note**: The prefix of the image name is the path into which the repository is to be pushed.
       
-   6.  
+4. Deploy the voting logger service and the Redis server using GKE
+   1. the [voting_logger/logger.yaml](voting_logger/logger.yaml) file contains the deployment instructions. It can be divided into
+      * **Lines 29:61** : deploy the Redis server with a single replica for data consistency using **election** as a password. The most important parameter is the service name at line 32 (**redis**). Other GKE pods will use it as a hostname to access the Redis server.
+        
+        <img src="figures/loggerk8s1.jpg" alt="Redis deployment" width="400" />
+        
+      * **Lines 2:27** : The deployment of three replicas of the service. Four environment variables are defined: REDIS_HOST, GCP_PROJECT, ELECTION_SUB_ID, and TOPIC_NAME. Their values will be accessed by the main.py script, as shown in the following figure. Note that the values **$PROJECT** and **$LOGGER_IMAGE** in line 23 and 17 will be passed to the YAML file before been deployed.
+
+        <img src="figures/loggerk8s2.jpg" alt="the voting logger service deployment" width="1025" />
