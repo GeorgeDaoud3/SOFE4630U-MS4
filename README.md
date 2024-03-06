@@ -123,7 +123,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
 
       <img src="figures/loggerDockerfile.jpg" alt="Dockerfile for the voting logger service" width="425" />
       
-   2. The docker image name will be prefixed by the artifact repository. Run the following commands after replacing **&lt;REPO full path&gt;** by the <a href="#4630u"> repository full path</a>.
+   2. The docker image name will be prefixed by the artifact repository. Run the following commands after replacing **&lt;REPO full path&gt;** by the <a href="#sofe4630u"> repository full path</a>.
       ``` cmd
       REPO=<REPO full path>
       LOGGER_IMAGE=$REPO/logger
