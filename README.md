@@ -117,7 +117,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
    cd ~
    git clone https://github.com/GeorgeDaoud3/SOFE4630U-MS4.git
    ```
-2. Upload <a href ="#cred">the JSON file with GCP credential <\a> to the path **~/SOFE4630U-MS4/voting_logger**.
+2. Upload <a href ="#cred"> the JSON file with GCP credential </a> to the path **~/SOFE4630U-MS4/voting_logger**.
 3. Containerize the service
    1. The Dockerfile at [voting_logger/Dockerfile](voting_logger/Dockerfile) contains the instruction to containerize the service.
       **Line 1: ** uses a Linux with an installed Python 3.9 as the basic image.
