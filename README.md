@@ -247,7 +247,8 @@ This subsection will go through the Python script at [voting_record/main.py](vot
       REPO=<REPO full path>
       POSTGRES_IMAGE=$REPO/postgres:election
       echo $POSTGRES_IMAGE
-      
+  
+      cd ~/SOFE4630U-MS4/voting_record/postgres
       gcloud builds submit -t $POSTGRES_IMAGE
       ```
 4. Deploy the voting recorder service and the PostgreSQL server using GKE
