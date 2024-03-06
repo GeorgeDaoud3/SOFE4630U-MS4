@@ -60,18 +60,13 @@
    3. Name it **sofe4630u** and make sure that the type is set to **Docker**. Set the region to **northamerica-northeast2 (Toronto)**. Finally, press **create**.
 
       <img src="figures/createRepository.jpg" alt="create a new repo" width="360" />
-   4. open the **sofe4630u** repository and copy the repo path.
+   4. <div id="sofe4630u">open the **sofe4630u** repository and copy the repo path.</div>
 
       <img src="figures/repoPath.jpg" alt="create a new repo" width="900" />
 
       and save it in an environment variable
       ``` cmd
       REPO=<REPO full path>
-      echo $REPO
-      ```
-      Or you can search for the the full path using
-      ``` cmd
-      REPO=$(gcloud artifacts repositories list --location northamerica-northeast2 --format 'json' | grep sofe4630u | grep -Po '"name": "projects/\K[^"]*')
       echo $REPO
       ```
 ## The logger service
@@ -128,9 +123,9 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
 
       <img src="figures/loggerDockerfile.jpg" alt="Dockerfile for the voting logger service" width="425" />
       
-   2. The docker image name will be prefixed by the artifact repository created before
+   2. The docker image name will be prefixed by the artifact repository. Run the following commands after replacing **&lt;REPO full path&gt;** by the <a href="#4630u"> repository full path</a>.
       ``` cmd
-      REPO=$(gcloud artifacts repositories list --location northamerica-northeast2 --format 'json' | grep sofe4630u | grep -Po '"name": "projects/\K[^"]*')
+      REPO=<REPO full path>
       LOGGER_IMAGE=$REPO/logger
       echo $LOGGER_IMAGE
       ```
