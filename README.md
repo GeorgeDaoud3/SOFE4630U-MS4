@@ -47,7 +47,7 @@
 
         <img src="figures/subscription.jpg" alt="The message's attributes and format" width="930" />
         
-## settng up the GCP project
+## Setting up the GCP Project
 1. Create a new topic in Google Pub/Sub with a default subscription; name it **election**.
 2. <div id="cred">Create a service account with the Google Pub/Sub admin rule. Create and download a JSON file with the corresponding credentials. ( **or use the one already created in MS2**)</div>
 3. As each service will be containerized, a docker repository is needed to host the docker images of the **logger** and **recorder** services.
@@ -70,7 +70,7 @@
       echo $REPO
       ```
 ## The logger service
-### The python Code
+### The Service Python Script
 This subsection will go through the Python script at [voting_logger/main.py](voting_logger/main.py). 
 1. **Lines 11: 12** : search for a JSON file in the current directory and use it for GCP credentials. It assumes that only a single JSON file exists in the current directory.
 2. **Lines 15: 18** : use the values of predefined environment variables to set the values of redis_host, project_id, subscription_id, and topic_name variables. To prevent having the values of the variables hard coded in the code.
@@ -106,7 +106,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
 
    <img src="figures/logger5.jpg" alt="voting logger script (lines 46:77)" width="1065" />
    
-### Deployment of the service
+### The Deployment of the Service
 1. Clone the GitHub repo in the GCP console.
    ``` cmd
    cd ~
