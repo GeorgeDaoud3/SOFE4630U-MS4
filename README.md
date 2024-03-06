@@ -109,7 +109,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
       2. **Line 48** : define the full path to the topic
       3. **line 68** : will store the voting time associated with the key created in line 61 in the Redis server to prevent the voter from voting again.
 
-   <img src="figures/logger5.jpg" alt="voting logger script (lines 11:18)" width="1330" />
+   <img src="figures/logger5.jpg" alt="voting logger script (lines 11:18)" width="1065" />
    
 ### Deployment of the service
 1. Clone the GitHub repo in the GCP console.
