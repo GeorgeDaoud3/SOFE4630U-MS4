@@ -71,7 +71,7 @@
       ```
       Or you can search for the the full path using
       ``` cmd
-      REPO=$(gcloud artifacts repositories list --location northamerica-northeast2 --format 'json' | grep sofe4630 | grep -Po '"name": "\K[^"]*')
+      REPO=$(gcloud artifacts repositories list --location northamerica-northeast2 --format 'json' | grep sofe4630u | grep -Po '"name": "\K[^"]*')
       echo $REPO
       ```
 ## The logger service
@@ -130,7 +130,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
       
    2. The docker image name will be prefixed by the artifact repository created before
       ``` cmd
-      REPO=$(gcloud artifacts repositories list --location northamerica-northeast2 --format 'json' | grep sofe4630 | grep -Po '"name": "\K[^"]*')
+      REPO=$(gcloud artifacts repositories list --location northamerica-northeast2 --format 'json' | grep sofe4630u | grep -Po '"name": "\K[^"]*')
       LOGGER_IMAGE=$REPO/logger
       echo $LOGGER_IMAGE
       ```
