@@ -157,3 +157,27 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
       * **Lines 2:27** : The deployment of three replicas of the service. Four environment variables are defined: REDIS_HOST, GCP_PROJECT, ELECTION_SUB_ID, and TOPIC_NAME. Their values will be accessed by the main.py script, as shown in the following figure. Note that the values **$PROJECT** and **$LOGGER_IMAGE** in line 23 and 17 will be passed to the YAML file before been deployed.
 
         <img src="figures/loggerk8s2.jpg" alt="the voting logger service deployment" width="1025" />
+
+   2. the following command will substitute in the YAML file with the crossponding environment variables and then will deploy the service and the Redis server.
+      ``` cmd
+      REPO=<REPO full path>
+      LOGGER_IMAGE=$REPO/logger
+      PROJECT=$(gcloud config list project --format "value(core.project)")
+      
+      cd ~/SOFE4630U-MS4/voting_logger
+      PROJECT=$PROJECT LOGGER_IMAGE=$LOGGER_IMAGE envsubst < logger.yaml | kubectl apply -f -
+      ```
+5. To check the deployment, get the list of pods and make sure that they all available. Then, look for a pod for any of the service replicas and prints its logs.
+      ```cmd
+      kubectl get pods
+      kubectl logs <pod-name>
+      ```
+      It should look like
+   
+      <img src="figures/loggerlogs.jpg" alt="the logs of the voting logger service" width="1025" />
+      
+6. Finally if you want to stop the service (**Don't run it now**)
+   ```cmd
+   cd ~/SOFE4630U-MS4/voting_logger
+   kubectl delete -f logger.yaml
+   ```
