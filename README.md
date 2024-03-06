@@ -49,7 +49,7 @@
         
 ## settng up the GCP project
 1. Create a new topic in Google Pub/Sub with a default subscription; name it **election**.
-2. Create a service account with the Google Pub/Sub admin rule. Create and download a JSON file with the corresponding credentials. ( **or use the one already created in MS2**)
+2. <div id="cred">Create a service account with the Google Pub/Sub admin rule. Create and download a JSON file with the corresponding credentials. ( **or use the one already created in MS2**)</div>
 3. As each service will be containerized, a docker repository is needed to host the docker images of the **logger** and **recorder** services.
    1. Search for Artifact Registry
       
@@ -97,7 +97,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
    4. **Lines 88:93** : create a **subscription** if it does not exist. If it already exists, the creation will fail, an exception will be thrown which will be handled by the except block.
    5. **Lines 97:101** : subscribe to the topic using the **subscription** and set the callback function to handle the received messages to **callback**.
 
-   <img src="figures/logger4.jpg" alt="voting logger script (lines 11:18)" width="880" />
+   <img src="figures/logger4.jpg" alt="voting logger script (lines 79:101)" width="880" />
 
 6. **Lines 46: 77**: The callback function to handle the received message.
    1. **Line 55** : serialize the received message
@@ -109,15 +109,47 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
       2. **Line 48** : define the full path to the topic
       3. **line 68** : will store the voting time associated with the key created in line 61 in the Redis server to prevent the voter from voting again.
 
-   <img src="figures/logger5.jpg" alt="voting logger script (lines 11:18)" width="1065" />
+   <img src="figures/logger5.jpg" alt="voting logger script (lines 46:77)" width="1065" />
    
 ### Deployment of the service
 1. Clone the GitHub repo in the GCP console.
    ``` cmd
-   cd 
+   cd ~
+   git clone https://github.com/GeorgeDaoud3/SOFE4630U-MS4.git
    ```
-3. 
+2. Upload <a href ="#cred">the JSON file with GCP credential <\a> to the path **~/SOFE4630U-MS4/voting_logger**.
+3. Containerize the service
+   1. The Dockerfile at [voting_logger/Dockerfile](voting_logger/Dockerfile) contains the instruction to containerize the service.
+      **Line 1: ** uses a Linux with an installed Python 3.9 as the basic image.
+      **Line 2: ** installs the required Python libraries on the base image.
+      **Line 3: ** copies all the JSON files (assumed to be one) from the current directory of the GCP console to the working directory in the base image.
+      **Line 4: ** copies the Python file (main.py) from the current directory of the GCP console to the working directory in the base image.
+      **Line 5: ** runs the Python script and displays any printed messages in the container logs.
 
+      <img src="figures/loggerDockerfile.jpg" alt="Dockerfile for the voting logger service" width="425" />
+      
+   2. The docker image name will be prefixed by the artifact repository created before
+      ``` cmd
+      REPO=$(gcloud artifacts repositories list --location northamerica-northeast2 --format 'json' | grep sofe4630 | grep -Po '"name": "\K[^"]*')
+      LOGGER_IMAGE=$REPO/logger
+      echo $LOGGER_IMAGE
+      ```
+   3. Make sure that the path **~/SOFE4630U-MS4/voting_logger** contains the JSON file of the GCP credential, the main.py script, and the Dockerfile.
+      ``` cmd
+      cd ~/SOFE4630U-MS4/voting_logger
+      ls
+      ```
 
-
-     
+      <img src="figures/loggerls.jpg" alt="Dockerfile for the voting logger service" width="750" />
+      
+   4. Execute the instruction in the Dockerfile and generate the image
+      ``` cmd
+      docker build . -t $LOGGER_IMAGE
+      ```
+   5. The docker image is created and stored in the GCP console. This is a temporary and local storage. It should be publicly available by pushing it to the artifact repository for use in a Kubernetes deployment.
+      ``` cmd
+      docker push $LOGGER_IMAGE
+      ```
+      **Note**: The prefix of the image name is the path into which the repository is to be pushed.
+      
+   6.  
