@@ -199,61 +199,42 @@ This subsection will go through the Python script at [voting_record/main.py](vot
    <img src="figures/recorder3.jpg" alt="voting recorder script (lines 84:106)" width="1080" />
 
 6. **Lines 54: 82**: The callback function to handle the received message.
-   1. **Line 55** : serialize the received message
-   2. **Line 61** : generate a key value for voter by combining the **voter ID** and the **election ID**.
-   3. **Line 62** : check if the key already exists in the Redis server
-   4. **Lines 63:65** : if the key exists, an **Already Voted!!!** message will be produced with attributes (**function**="result",**machineID**=...) to be received by the **voting machine**.
-   5. **Lines 67:75** : if the key doesn't exist, the voter ID will be excluded, and the updated message will be produced to the topic with attributes (**function**="record vote") to be processed by the **voting recorder** service. Please note that:
-      1. **Line 47** : create the producer  
-      2. **Line 48** : define the full path to the topic
-      3. **line 68** : will store the voting time associated with the key created in line 61 in the Redis server to prevent the voter from voting again.
+   1. **Lines 65:71** : store the recieved message in the PostgreSQL server.
+   2. **Lines 73:79** : a **successful** message will be produced with attributes (**function**="result",**machineID**=...) to be received by the **voting machine**
 
    <img src="figures/recorder4.jpg" alt="voting recorder script (lines 54:82)" width="1300" />
    
 ### The Deployment of the Service
-1. Clone the GitHub repo in the GCP console.
-   ``` cmd
-   cd ~
-   git clone https://github.com/GeorgeDaoud3/SOFE4630U-MS4.git
-   ```
-2. Upload <a href ="#cred"> the JSON file with GCP credential </a> to the path **~/SOFE4630U-MS4/voting_logger**.
-3. Containerize the service
-   1. The Dockerfile at [voting_logger/Dockerfile](voting_logger/Dockerfile) contains the instruction to containerize the service.
-      **Line 1: ** uses a Linux with an installed Python 3.9 as the basic image.
-      **Line 2: ** installs the required Python libraries on the base image.
-      **Line 3: ** copies all the JSON files (assumed to be one) from the current directory of the GCP console to the working directory in the base image.
-      **Line 4: ** copies the Python file (main.py) from the current directory of the GCP console to the working directory in the base image.
-      **Line 5: ** runs the Python script and displays any printed messages in the container logs.
-
-      <img src="figures/loggerDockerfile.jpg" alt="Dockerfile for the voting logger service" width="425" />
+1. Upload <a href ="#cred"> the JSON file with GCP credential </a> to the path **~/SOFE4630U-MS4/voting_logger**.
+2. Containerize the service
+   1. The Dockerfile at [voting_record/Dockerfile](voting_record/Dockerfile) looks like the Dockerfile for the logger service except
+      **Line 2: ** installs the psycopg2 which is a PostgreSQL client Python Library
       
-   2. The docker image name will be prefixed by the artifact repository. Run the following commands after replacing **&lt;REPO full path&gt;** by the <a href="#sofe4630u"> repository full path</a>.
+      <img src="figures/recordDockerfile.jpg" alt="Dockerfile for the voting recorder service" width="450" />
+      
+   2. Run the following commands after replacing **&lt;REPO full path&gt;** by the <a href="#sofe4630u"> repository full path</a> to generate the full name of the service image.
       ``` cmd
       REPO=<REPO full path>
-      LOGGER_IMAGE=$REPO/logger
-      echo $LOGGER_IMAGE
+      RECORDER_IMAGE=$REPO/recorder
+      echo $RECORDER_IMAGE
       ```
-   3. Make sure that the path **~/SOFE4630U-MS4/voting_logger** contains the JSON file of the GCP credential, the main.py script, and the Dockerfile.
+   3. Make sure that the path **~/SOFE4630U-MS4/voting_record** contains the JSON file of the GCP credential, the main.py script, and the Dockerfile.
       ``` cmd
-      cd ~/SOFE4630U-MS4/voting_logger
+      cd ~/SOFE4630U-MS4/voting_record
       ls
       ```
 
-      <img src="figures/loggerls.jpg" alt="Dockerfile for the voting logger service" width="750" />
+      <img src="figures/recorderls.jpg" alt="Dockerfile for the voting recorder service" width="850" />
       
-   4. Execute the instruction in the Dockerfile and generate the image
+   4. Execute the instruction in the Dockerfile to generate the image and push it to artifact repository. this is analternative way other than thr **docker build** and **docker push** used in the logger service.
       ``` cmd
-      cd ~/SOFE4630U-MS4/voting_logger
-      docker build . -t $LOGGER_IMAGE
+      cd ~/SOFE4630U-MS4/voting_record
+      gcloud builds submit -t $RECORDER_IMAGE 
       ```
-   5. The docker image is created and stored in the GCP console. This is a temporary and local storage. It should be publicly available by pushing it to the artifact repository for use in a Kubernetes deployment.
-      ``` cmd
-      docker push $LOGGER_IMAGE
-      ```
-      **Note**: The prefix of the image name is the path into which the repository is to be pushed.
-      
-4. Deploy the voting logger service and the Redis server using GKE
-   1. the [voting_logger/logger.yaml](voting_logger/logger.yaml) file contains the deployment instructions. It can be divided into
+3. Also, we need to create a Docker image to the PostgreSQL to create an initial table within the server.
+   
+5. Deploy the voting recorder service and the PostgreSQL server using GKE
+   1. the [voting_recorder/record.yaml](voting_recorder/record.yaml) file contains the deployment instructions. It can be divided into
       * **Lines 29:61** : deploy the Redis server with a single replica for data consistency using **election** as a password. The most important parameter is the service name at line 32 (**redis**). Other GKE pods will use it as a hostname to access the Redis server.
         
         <img src="figures/loggerk8s1.jpg" alt="Redis deployment" width="400" />
@@ -271,7 +252,7 @@ This subsection will go through the Python script at [voting_record/main.py](vot
       cd ~/SOFE4630U-MS4/voting_logger
       PROJECT=$PROJECT LOGGER_IMAGE=$LOGGER_IMAGE envsubst < logger.yaml | kubectl apply -f -
       ```
-5. To check the deployment, get the list of pods and make sure that they all available. Then, look for a pod for any of the service replicas and prints its logs.
+6. To check the deployment, get the list of pods and make sure that they all available. Then, look for a pod for any of the service replicas and prints its logs.
       ```cmd
       kubectl get pods
       kubectl logs <pod-name>
@@ -280,7 +261,7 @@ This subsection will go through the Python script at [voting_record/main.py](vot
    
       <img src="figures/loggerlogs.jpg" alt="the logs of the voting logger service" width="1025" />
       
-6. Finally if you want to stop the service (**Don't run it now**)
+7. Finally if you want to stop the service (**Don't run it now**)
    ```cmd
    cd ~/SOFE4630U-MS4/voting_logger
    kubectl delete -f logger.yaml
