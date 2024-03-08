@@ -29,12 +29,12 @@ if debug:
     print(project_id);
     print(topic_name);
 
-messageRecieved=False;     # A flag to block the machine from sending a new votr unless the current vote is processed.
+messageReceived=False;     # A flag to block the machine from sending a new votr unless the current vote is processed.
 last_uuid='';              # A universally unique identifier for the current vote
 # The callback function for handling received messages
 def callback(message: pubsub_v1.subscriber.message.Message) -> None:
     # Make sure that the global variables are accessed from within the function.
-    global last_uuid, messageRecieved
+    global last_uuid, messageReceived
     
     # get the message content
     message_data = json.loads(message.data);
@@ -42,7 +42,7 @@ def callback(message: pubsub_v1.subscriber.message.Message) -> None:
     
     # Check if the UUID matches the current vote
     if last_uuid==message_data['UUID'] :
-        messageRecieved=True; # unblock the main thread
+        messageReceived=True; # unblock the main thread
     message_data = json.loads(message.data);
     message.ack()
 
@@ -94,7 +94,7 @@ while True:
            'voting': int(random.random()*5), 'election_ID': electionID, 'UUID': last_uuid,
            'timestamp':int(1000*time.time())}
            
-    messageRecieved=False; # A flag to block the main thread until result is recieved
+    messageReceived=False; # A flag to block the main thread until result is recieved
     
     # Publish the voting message
     future = publisher.publish(topic_path, json.dumps(value).encode('utf-8'),function="submit vote");
@@ -102,7 +102,7 @@ while True:
     
     # Wait for a result, Time out will be signaled if no answer is received after 10 seconds
     c=1;
-    while( messageRecieved==False):
+    while( messageReceived==False):
         time.sleep(0.01);
         c=c+1;
         if(c==1000):
