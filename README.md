@@ -9,6 +9,7 @@
 [https://github.com/GeorgeDaoud3/SOFE4630U-MS4](https://github.com/GeorgeDaoud3/SOFE4630U-MS4)
 
 ## Introduction 
+
 1. See the following video for [the foundations of microservices](https://www.youtube.com/watch?v=lL_j7ilk7rc).
 2. Read this document about [Event-driven architecture with Pub/Sub](https://cloud.google.com/solutions/event-driven-architecture-pubsub). Focus on the **event filter** technique, its advantages, limitations, and implementation. The microservices implemented in the milestone will use this technique to communicate.
 3. The milestone would implement a cloud solution for a cloud-based election system. The following figure shows the architecture of the system
@@ -70,7 +71,9 @@
       echo $REPO
       ```
 ## The Logger Service
+
 ### The Service Python Script
+
 This subsection will go through the Python script at [voting_logger/main.py](voting_logger/main.py). 
 1. **Lines 11: 12** : search for a JSON file in the current directory and use it for GCP credentials. It assumes that only a single JSON file exists in the current directory.
 2. **Lines 15: 18** : use the values of predefined environment variables to set the values of redis_host, project_id, subscription_id, and topic_name variables. To prevent having the values of the variables hard coded in the code.
@@ -183,7 +186,9 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
    ```
 
 ## The Voting Recorder Service
+
 ### The Service Python Script
+
 This subsection will go through the Python script at [voting_record/main.py](voting_record/main.py). It's similar to that used for the logger service except
 
 1. **Lines 15** : use the values of predefined environment variables to set the values of the postgres_host for the PostgreSQL server.
@@ -205,6 +210,7 @@ This subsection will go through the Python script at [voting_record/main.py](vot
    <img src="figures/recorder4.jpg" alt="voting recorder script (lines 54:82)" width="1300" />
    
 ### The Deployment of the Service
+
 1. Upload <a href ="#cred"> the JSON file with GCP credential </a> to the path **~/SOFE4630U-MS4/voting_record**.
 2. Containerize the service
    1. The Dockerfile at [voting_record/Dockerfile](voting_record/Dockerfile) looks like the Dockerfile for the logger service except
@@ -286,7 +292,9 @@ This subsection will go through the Python script at [voting_record/main.py](vot
    kubectl delete -f recorder.yaml
    ```
 ## The Voting Machine
+
 ### The Service Python Script
+
 This script is assumed to run on your local computer, but you can run it on the GCP console. Thus, there is no need for containerization.
 In this section, we will go through its Python code and run it. The main program will generate random votes and send them through Google Pub/Sub topic. A subscriber to the topic will subscribe to messages with the function attribute of the value "result" and a matched the machineID attribute. It will wait for a response for the sent vote or signal a time-out. A thread will be created for the subscriber to prevent it from blocking the main program. The script can be broken up into:
 * **Lines 10:22** : initial the needed variables. Note that you need to edit line 17 to add your project ID.
@@ -321,6 +329,7 @@ In this section, we will go through its Python code and run it. The main program
    <img src="figures/votingMachine.jpg" alt="the script of the voting machine (lines 32:47) " width="790" />
 
 ### Run The Python Script
+
 1. Set the project ID with your project ID in line 17.
 2. Run the Python script
    ```cmd
@@ -334,6 +343,7 @@ The output would be similar to
 <img src="figures/finalresults.jpg" alt="the script of the voting machine (lines 32:47) " width="1175" />
 
 ## Design
+
 In milestone 2, you designed a Dataflow job to preprocess the smart meter measurements. In this milestone, you will implement the same preprocessing but using microservices to communicate using a single Google Pub/sub-topic.
 
 The list of microservices are
@@ -349,9 +359,11 @@ Also, a [BigQuerry subscription](https://cloud.google.com/pubsub/docs/bigquery) 
 
 
 ## Discussion:
+
 Compare the advantages and disadvantages of using Dataflow vs microservices in preprocessing the smart reading.
 
-## Deliverables
+## Deliverables:
+
 * A report that includes the discussion part. It should also describe the design part and the steps to deploy and execute it.
 * An audible video of about 4 minutes showing the deployment and execution of the voting system.
 * An audible video of about 4 minutes showing the deployment and execution of the design part.
