@@ -290,21 +290,34 @@ This subsection will go through the Python script at [voting_record/main.py](vot
 This script is assumed to run on your local computer, but you can run it on the GCP console. Thus, there is no need for containerization.
 In this section, we will go through its Python code and run it. The main program will generate random votes and send them through Google Pub/Sub topic. A subscriber to the topic will subscribe to messages with the function attribute of the value "result" and a matched the machineID attribute. It will wait for a response for the sent vote or signal a time-out. A thread will be created for the subscriber to prevent it from blocking the main program. The script can be broken up into:
 * **Lines 10:22** : initial the needed variables. Note that you need to edit line 17 to add your project ID.
+  
    <img src="figures/votingMachine1.jpg" alt="the script of the voting machine (lines 10:22) " width="700" />
+   
 *  **Lines 49:62** : define the subscriber and producer and the corresponding variables
+  
    <img src="figures/votingMachine2.jpg" alt="the script of the voting machine (lines 49:62) " width="900" />
+   
 *  **Lines 89:113** : the main thread code that iteratively generates a random vote, produces it to the topic, sets the **messageReceived** flag to False, and finally, waits until the subscriber thread changes it to **True**. Otherwise, a time-out message will be printed. Note that the voterId is limited to 100 so repeated voter IDs are more likely to happen. You can increase the limit.
+  
    <img src="figures/votingMachine3.jpg" alt="the script of the voting machine (lines 89:113) " width="975" />
+   
 *  **Lines 86:87** : create a thread that runs the **thread_function** function.
+  
    <img src="figures/votingMachine4.jpg" alt="the script of the voting machine (lines 86:87) " width="470" />
+   
 *  **Lines 68:83** : define the **thread_function** function that creates a subscription if doesn't exist. The subscription is configured to filter messages with the attributes of function="result" and a matched **machineID**. It also creates a subscriber with a callback function to handle received messages.
+  
    <img src="figures/votingMachine5.jpg" alt="the script of the voting machine (lines 68:83) " width="940" />
+   
 *  **Lines 32:47** : define the **callback** function process the recieved nessage. If the message UUID matches the last send UUID, ** messageRceived ** is set to True.
+  
    <img src="figures/votingMachine6.jpg" alt="the script of the voting machine (lines 32:47) " width="790" />
+   
 *  The interaction between the main thread and the callback function is summarized as
    1. The main thread creates the vote message, saves the UUID of the message as **last_uuid**, and sets the **messageReceived** flag to False.
    2. The callback function checks the UUID of the received messages. if any matches **last_uuid**, the **messageReceived** flag is set to True.
    3. The main thread waits until the **messageReceived** flag is set to True. If no answer is received in 10 seconds, A timeout message is printed
+      
    <img src="figures/votingMachine.jpg" alt="the script of the voting machine (lines 32:47) " width="790" />
 
 ### Run The Python Script
@@ -315,3 +328,31 @@ In this section, we will go through its Python code and run it. The main program
    ```
 3. Enter the machine ID and election ID.
 4. You can run other script instances but with different machine IDs.
+
+The output would be similar to 
+
+<img src="figures/finalresults.jpg" alt="the script of the voting machine (lines 32:47) " width="1175" />
+
+## Design
+In milestone 2, you designed a Dataflow job to preprocess the smart meter measurements. In this milestone, you will implement the same preprocessing but using microservices to communicate using a single Google Pub/sub-topic.
+
+The list of microservices are
+1. FilterReading: Eliminate records with missing measurements (containing None).
+2. ConvertReading: convert the pressure from kPa to psi and the temperature from Celsius to Fahrenheit using the following equations
+
+𝑃(𝑝𝑠𝑖) = 𝑃(𝑘𝑃𝑎)/6.895
+
+𝑇(𝐹) = 𝑇(𝐶)∗1.8+32
+
+Also, a (BigQuerry subscription)[https://cloud.google.com/pubsub/docs/bigquery] (similar to Kafka Connector) should be implemented to store the results in a bigQuerry Table automatically.
+
+
+
+## Discussion:
+Compare the advantages and disadvantages of using Dataflow vs microservices in preprocessing the smart reading.
+
+## Deliverables
+* A report that includes the discussion part. It should also describe the design part and the steps to deploy and execute it.
+* An audible video of about 4 minutes showing the deployment and execution of the voting system.
+* An audible video of about 4 minutes showing the deployment and execution of the design part.
+* The scripts of the design part.
