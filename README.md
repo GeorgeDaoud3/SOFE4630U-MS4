@@ -319,7 +319,7 @@ In this section, we will go through its Python code and run it. The main program
   
    <img src="figures/votingMachine5.jpg" alt="the script of the voting machine (lines 68:83) " width="940" />
    
-*  **Lines 32:47** : define the **callback** function process the recieved nessage. If the message UUID matches the last send UUID, ** messageRceived ** is set to True.
+*  **Lines 32:47** : define the **callback** function process the recieved nessage. If the message UUID matches the last send UUID, **messageRceived** is set to True.
   
    <img src="figures/votingMachine6.jpg" alt="the script of the voting machine (lines 32:47) " width="790" />
    
