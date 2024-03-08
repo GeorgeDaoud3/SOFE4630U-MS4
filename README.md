@@ -1,4 +1,4 @@
-# Milestone 4: Google Pub/Sub communication for Microservices
+# Milestone 4: Microservices using Google Pub/Sub Communication
 ## Objective:
 * Get familiar with microservices.
 * Implement microservice using Python.
@@ -115,11 +115,11 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
 2. Upload <a href ="#cred"> the JSON file with GCP credential </a> to the path **~/SOFE4630U-MS4/voting_logger**.
 3. Containerize the service
    1. The Dockerfile at [voting_logger/Dockerfile](voting_logger/Dockerfile) contains the instruction to containerize the service.
-      **Line 1: ** uses a Linux with an installed Python 3.9 as the basic image.
-      **Line 2: ** installs the required Python libraries on the base image.
-      **Line 3: ** copies all the JSON files (assumed to be one) from the current directory of the GCP console to the working directory in the base image.
-      **Line 4: ** copies the Python file (main.py) from the current directory of the GCP console to the working directory in the base image.
-      **Line 5: ** runs the Python script and displays any printed messages in the container logs.
+      * **Line 1**: uses a Linux with an installed Python 3.9 as the basic image.
+      * **Line 2**: installs the required Python libraries on the base image.
+      * **Line 3**: copies all the JSON files (assumed to be one) from the current directory of the GCP console to the working directory in the base image.
+      * **Line 4**: copies the Python file (main.py) from the current directory of the GCP console to the working directory in the base image.
+      * **Line 5**: runs the Python script and displays any printed messages in the container logs.
 
       <img src="figures/loggerDockerfile.jpg" alt="Dockerfile for the voting logger service" width="425" />
       
