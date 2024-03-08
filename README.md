@@ -358,7 +358,9 @@ The list of microservices are
 
 Also, a [BigQuerry subscription](https://cloud.google.com/pubsub/docs/bigquery) (similar to Kafka Connector) should be implemented to store the results in a bigQuerry Table automatically.
 
+**Note**: the microservices in the design part is simpler than those in the voting system as they need no datastorage
 
+<img src="figures/design.jpg" alt="the design architecture" width="640" />
 
 ## Discussion:
 
