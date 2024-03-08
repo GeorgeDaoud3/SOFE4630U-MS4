@@ -285,3 +285,8 @@ This subsection will go through the Python script at [voting_record/main.py](vot
    cd ~/SOFE4630U-MS4/voting_record
    kubectl delete -f recorder.yaml
    ```
+## The Voting Machine
+### The Service Python Script
+It's assumed that this script will run on your local computer, but you can run it on GCP console. Thus, there is no need of containerization.
+In this section, we will go through its python code and run it. The main program will generate random votes and send it through Google Pub/Sub topic. A subscriber to the topic will subscribe to messages with the function attribute of "result" and a matched machineID attribute. It will wait for a response for the sent vote or signal a time out. To prevent the subscriber from block the main program, a thread will be created for the subscriber. The script can be broken up into:
+* lines 1initial the
