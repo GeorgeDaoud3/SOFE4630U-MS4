@@ -287,6 +287,12 @@ This subsection will go through the Python script at [voting_record/main.py](vot
    ```
 ## The Voting Machine
 ### The Service Python Script
-It's assumed that this script will run on your local computer, but you can run it on GCP console. Thus, there is no need of containerization.
-In this section, we will go through its python code and run it. The main program will generate random votes and send it through Google Pub/Sub topic. A subscriber to the topic will subscribe to messages with the function attribute of "result" and a matched machineID attribute. It will wait for a response for the sent vote or signal a time out. To prevent the subscriber from block the main program, a thread will be created for the subscriber. The script can be broken up into:
-* lines 1initial the
+This script is assumed to run on your local computer, but you can run it on the GCP console. Thus, there is no need for containerization.
+In this section, we will go through its Python code and run it. The main program will generate random votes and send them through Google Pub/Sub topic. A subscriber to the topic will subscribe to messages with the function attribute of the value "result" and a matched machineID attribute. It will wait for a response for the sent vote or signal a time-out. A thread will be created for the subscriber to prevent it from blocking the main program. The script can be broken up into:
+* **Lines 10:22** : initial the needed variables. Note that you need to edit line 17 to add your project ID.
+   <img src="figures/votingMachine1.jpg" alt="the logs of the voting logger service" width="735" />
+*  **Lines 49:62** : define the subscriber and producer and the corresponding variables
+   <img src="figures/votingMachine2.jpg" alt="the logs of the voting logger service" width="735" />
+*  **Lines 89:113** : the main thread code that iteratively generates a random vote, produces it to the topic, sets the **messageRecieved** flag to False, and finally, waits until the subscriber thread changes it to **True**.
+   <img src="figures/votingMachine2.jpg" alt="the logs of the voting logger service" width="735" />
+* khjk
