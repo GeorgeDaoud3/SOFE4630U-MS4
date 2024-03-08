@@ -292,6 +292,7 @@ This subsection will go through the Python script at [voting_record/main.py](vot
    cd ~/SOFE4630U-MS4/voting_record
    kubectl delete -f recorder.yaml
    ```
+   
 ## The Voting Machine
 
 ### The Service Python Script
