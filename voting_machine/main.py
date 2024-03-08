@@ -15,14 +15,11 @@ if len(files)>0:
 
 #To do: Set the project ID, topic name and the subscription_id 
 project_id = ""
-topic_name = ""
+topic_name = "election"
 
 # let the user enter the election and machine IDs
 electionID = int(input("Please enter the election ID (integer): "))
 machineID = int(input("Please enter the machine ID (integer): "))
-
-# Assign a different subscription ID for each voting machine.
-subscription_id = "election-result-"+str(machineID)+"-sub";
 
 debug=False;  # change to True for debugging
 if debug:
@@ -30,12 +27,7 @@ if debug:
     print(electionID);
     print(machineID);
     print(project_id);
-    print(subscription_id);
     print(topic_name);
-
-# create a publisher and get the topic path for the publisher
-publisher = pubsub_v1.PublisherClient()
-topic_path = publisher.topic_path(project_id, topic_name)
 
 messageRecieved=False;     # A flag to block the machine from sending a new votr unless the current vote is processed.
 last_uuid='';              # A universally unique identifier for the current vote
@@ -53,14 +45,25 @@ def callback(message: pubsub_v1.subscriber.message.Message) -> None:
         messageRecieved=True; # unblock the main thread
     message_data = json.loads(message.data);
     message.ack()
-    
+
+# Assign a different subscription ID for each voting machine.
+subscription_id = "election-result-"+str(machineID)+"-sub";
+
+# create a subscriber to the subscriber for the project using the subscription_id
 subscriber = pubsub_v1.SubscriberClient()
 subscription_path = subscriber.subscription_path(project_id, subscription_id)
-print(subscription_path)
+print(f"Listening for messages on {subscription_path}..\n")
 
+# create a publisher and get the topic path for the publisher
+publisher = pubsub_v1.PublisherClient()
+topic_path = publisher.topic_path(project_id, topic_name)
+
+# the condition used for filtering the messages to be recieved
 sub_filter = "attributes.function=\"result\" AND attributes.machineID=\""+str(machineID)+"\"";
+
 if debug:
     print(sub_filter)
+    print(subscription_id);
 
 # The subscriber thread function
 def thread_function():
@@ -108,7 +111,3 @@ while True:
 
     # Send a new message after 1 second
     time.sleep(1);
-    
-    
-    
-    
