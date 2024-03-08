@@ -344,7 +344,7 @@ The list of microservices are
 
 𝑇(𝐹) = 𝑇(𝐶)∗1.8+32
 
-Also, a (BigQuerry subscription)[https://cloud.google.com/pubsub/docs/bigquery] (similar to Kafka Connector) should be implemented to store the results in a bigQuerry Table automatically.
+Also, a [BigQuerry subscription](https://cloud.google.com/pubsub/docs/bigquery) (similar to Kafka Connector) should be implemented to store the results in a bigQuerry Table automatically.
 
 
 
