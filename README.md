@@ -347,7 +347,7 @@ The output would be similar to
 
 ## Design
 
-In milestone 2, you designed a Dataflow job to preprocess the smart meter measurements. In this milestone, you will implement the same preprocessing but using microservices to communicate using a single Google Pub/sub-topic.
+In milestone 2, you designed a Dataflow job to preprocess the smart meter measurements. In this milestone, you will implement the same preprocessing but using microservices communicating using a single Google Pub/sub-topic.
 
 The list of microservices are
 1. FilterReading: Eliminate records with missing measurements (containing None).
