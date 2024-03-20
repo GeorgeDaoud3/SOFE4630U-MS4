@@ -332,13 +332,14 @@ In this section, we will go through its Python code and run it. The main program
 
 ### Run The Python Script
 
-1. Set the project ID with your project ID in line 17.
-2. Run the Python script
+1. Edit the **main.py** withing the **voting machine** folder to set the project ID with your project ID in line 17.
+2. Upload <a href ="#cred"> the JSON file with GCP credential </a> to the same path as the **main.py** file.
+3. Run the Python script
    ```cmd
    python main.py
    ```
-3. Enter the machine ID and election ID.
-4. You can run other script instances but with different machine IDs.
+4. Enter the machine ID and election ID.
+5. You can run other script instances but with different machine IDs.
 
 The output would be similar to 
 
