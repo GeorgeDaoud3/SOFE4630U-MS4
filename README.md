@@ -11,7 +11,7 @@
 ## Introduction 
 
 1. See the following video for [the foundations of microservices](https://www.youtube.com/watch?v=lL_j7ilk7rc).
-2. Read this document about [Event-driven architecture with Pub/Sub](https://cloud.google.com/solutions/event-driven-architecture-pubsub). Focus on the **event filter** technique, its advantages, limitations, and implementation. The microservices implemented in the milestone will use this technique to communicate.
+2. Read this document about [Event-driven architecture with Pub/Sub](https://cloud.google.com/solutions/event-driven-architecture-pubsub). Focus on the **event filter** technique, its advantages, limitations, and implementation. The microservices implemented in the milestone will use this technique for communication.
 3. The milestone would implement a cloud solution for a cloud-based election system. The following figure shows the architecture of the system
 
    <img src="figures/arch.jpg" alt="System Architecture" width="550" />
