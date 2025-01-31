@@ -22,7 +22,7 @@
       * First, it asks for the **election ID** and the **machine ID**.
       * Then, it generates random votes and sends them to a **voting logger** service.
       * Finally, it will wait for a response for 10 seconds.
-      * There will be three expected outputs: 
+      * There are three expected responses: 
          1. **Already voted** if a vote with the same **voter ID** was processed before.
          2. **A vote is recorded successfully**.
          3. **Time out** if the vote processing takes much longer than expected (10 sec).
