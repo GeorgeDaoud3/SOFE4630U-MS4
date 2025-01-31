@@ -49,8 +49,8 @@
         <img src="figures/subscription.jpg" alt="The message's attributes and format" width="930" />
         
 ## Setting up the GCP Project
-1. Create a new topic in Google Pub/Sub with a default subscription; name it **election**.
-2. <div id="cred">Create a service account with the Google Pub/Sub admin rule. Create and download a JSON file with the corresponding credentials. ( **or use the one already created in MS2**)</div>
+1. Create a new topic in Google Pub/Sub with a default subscription. Name the topic, **election**.
+2. <div id="cred">Create a service account with the Google Pub/Sub admin rule. Create and download a JSON file with the corresponding credentials. (**or use the one already created in MS2**)</div>
 3. As each service will be containerized, a docker repository is needed to host the docker images of the **logger** and **recorder** services.
    1. Search for Artifact Registry
       
@@ -127,7 +127,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
 
       <img src="figures/loggerDockerfile.jpg" alt="Dockerfile for the voting logger service" width="425" />
       
-   2. The docker image name will be prefixed by the artifact repository. Run the following commands after replacing **&lt;REPO full path&gt;** by the <a href="#sofe4630u"> repository full path</a>.
+   2. The name of the artifact repository will prefix the docker image name. Run the following commands after replacing **&lt;REPO full path&gt;** with the <a href="#sofe4630u"> repository full path</a>.
       ``` cmd
       REPO=<REPO full path>
       LOGGER_IMAGE=$REPO/logger
