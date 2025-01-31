@@ -75,37 +75,37 @@
 ### The Service Python Script
 
 This subsection will go through the Python script at [voting_logger/main.py](voting_logger/main.py). 
-1. **Lines 11: 12** : search for a JSON file in the current directory and use it for GCP credentials. It assumes that only a single JSON file exists in the current directory.
-2. **Lines 15: 18** : use the values of predefined environment variables to set the values of redis_host, project_id, subscription_id, and topic_name variables. To prevent having the values of the variables hard coded in the code.
+1. **Lines 11-12**: search for a JSON file in the current directory and use it for GCP credentials. It assumes that only a single JSON file exists in the current directory.
+2. **Lines 15-18**: use the values of predefined environment variables to set the values of redis_host, project_id, subscription_id, and topic_name variables. To prevent having the values of the variables hard coded in the code.
    
    <img src="figures/logger1.jpg" alt="voting logger script (lines 11:18)" width="710" />
 
-3. **Lines 20: 22** : define a **debug** variable and initialize it by **False**. However, it can be changed to **True** in the code or by setting another environment variable, **DEBUG**. If it is set to **True**, logs and information will be printed for debugging reasons, as in lines 23:28.
+3. **Lines 20-22**: define a **debug** variable and initialize it by **False**. However, it can be changed to **True** in the code or by setting another environment variable, **DEBUG**. If it is set to **True**, logs and information will be printed for debugging reasons, as in lines 23-28.
    
    <img src="figures/logger2.jpg" alt="voting logger script (lines 20:28)" width="550" />
 
-4. **Lines 30: 44** : Repeatedly try to connect to the Redis server each second. The service will terminate if the connection can't be established in a minute. 
+4. **Lines 30-44**: Repeatedly try to connect to the Redis server each second. The service will terminate if the connection can't be established in a minute. 
 
    <img src="figures/logger3.jpg" alt="voting logger script (lines 30:44)" width="750" />
    
-5. **Lines 79: 101**: create a subscription and use it to subscribe to the topic.
-   1. **Line 80** : create a **subscription path** using the **project ID** and the **subscription ID**.
-   2. **Line 81** : create a filter for the subscription (**function="submit vote"**).
-   3. **Lines 89:90** : create a **subscription** for the **subscription path** using the filter.
-   4. **Lines 88:93** : create a **subscription** if it does not exist. If it already exists, the creation will fail, an exception will be thrown which will be handled by the except block.
-   5. **Lines 97:101** : subscribe to the topic using the **subscription** and set the callback function to handle the received messages to **callback**.
+5. **Lines 79-101**: create a subscription and use it to subscribe to the topic.
+   1. **Line 80**: creates a **subscription path** using the **project ID** and the **subscription ID**.
+   2. **Line 81**: creates a filter for the subscription (**function="submit vote"**).
+   3. **Lines 89-90**: create a **subscription** for the **subscription path** using the filter.
+   4. **Lines 88-93**: create a **subscription** if it does not exist. If it already exists, the creation will fail, an exception will be thrown which will be handled by the except block.
+   5. **Lines 97-101**: subscribe to the topic using the **subscription** and set the callback function to handle the received messages to **callback**.
 
    <img src="figures/logger4.jpg" alt="voting logger script (lines 79:101)" width="880" />
 
-6. **Lines 46: 77**: The callback function to handle the received message.
-   1. **Line 55** : serialize the received message
-   2. **Line 61** : generate a key value for voter by combining the **voter ID** and the **election ID**.
-   3. **Line 62** : check if the key already exists in the Redis server
-   4. **Lines 63:65** : if the key exists, an **Already Voted!!!** message will be produced with attributes (**function**="result",**machineID**=...) to be received by the **voting machine**.
-   5. **Lines 67:75** : if the key doesn't exist, the voter ID will be excluded, and the updated message will be produced to the topic with attributes (**function**=" record vote") to be processed by the **voting recorder** service. Please note that:
-      1. **Line 47** : create the producer  
-      2. **Line 48** : define the full path to the topic
-      3. **line 68** : will store the voting time associated with the key created in line 61 in the Redis server to prevent the voter from voting again.
+6. **Lines 46-77**: The callback function to handle the received message.
+   1. **Line 55**: serializes the received message
+   2. **Line 61**: generates a key value for voter by combining the **voter ID** and the **election ID**.
+   3. **Line 62**: checks if the key already exists in the Redis server
+   4. **Lines 63:65**: if the key exists, an **Already Voted!!!** message will be produced with attributes (**function**="result",**machineID**=...) to be received by the **voting machine**.
+   5. **Lines 67:75**: if the key doesn't exist, the voter ID will be excluded, and the updated message will be produced to the topic with attributes (**function**=" record vote") to be processed by the **voting recorder** service. Please note that:
+      1. **Line 47**: creates the producer  
+      2. **Line 48**: defines the full path to the topic
+      3. **line 68**: will store the voting time associated with the key created in line 61 in the Redis server to prevent the voter from voting again.
 
    <img src="figures/logger5.jpg" alt="voting logger script (lines 46:77)" width="1065" />
    
