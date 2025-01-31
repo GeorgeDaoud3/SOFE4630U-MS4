@@ -21,12 +21,12 @@
       * A Python script that will run on a local machine to simulate a voting machine.]
       * First, it asks for the **election ID** and the **machine ID**.
       * Then, it generates random votes and sends them to a **voting logger** service.
-      * Finally, it will wait for a response for 10 sec.
+      * Finally, it will wait for a response for 10 seconds.
       * There will be three expected outputs: 
          1. **Already voted** if a vote with the same **voter ID** was processed before.
-         2. **A vote was recorded successfully**.
+         2. **A vote is recorded successfully**.
          3. **Time out** if the vote processing takes much longer than expected (10 sec).
-      * You can run multiple script instances but with different **machine ID**. 
+      * You can run multiple script instances but with different **machine ID**s. 
    2. A **voting logger** service.
       * The service accesses a Redis server to store the IDs of the voters who have already been voted on.
       * When a vote is received,
@@ -37,14 +37,14 @@
             * After excluding the **voter ID** (for voter privacy policy), the voting information will be sent to the **voting record** service.
    3. A **voting record** service.
       * The service uses a **PostgreSQL** server to store the votes.
-      * Once, a **voting record** is received, it will be stored in a the **PostgreSQL** server.
-      * Then a **A vote was recorded successfully** will be sent to the **voting machine**.
+      * Once a **voting record** is received, it will be stored in a **PostgreSQL** server.
+      * Then, **A vote was recorded successfully** message will be sent to the **voting machine**.
    4. A **Google Pub/sub** for handling the communication between the microservices.
-      * No IP or URL of the microservices is needed to exchange data. Only the **topic ID** is needed.
+      * No IP or URL of the microservices is needed to exchange data. Only the **topic ID** is required.
       * One topic will be used to exchange the data between the voting machine(s) and the two services.
       * A universally unique identifier (UUID) will be used to identify the vote during the processing by the services.
-      * The message attributes will be set to filter the messages. Subscriptions will be created for the topic. Each will specify the condition of the received message (filter). Only messages with a matched filter conditions will be received by the Subscriber using the filtered subscription.
-      * The attribute values set and filtered by each microservice as well as the message formats are shown in the following figure.
+      * The message attributes will be set to filter the messages. Subscriptions will be created for the topic. Each will specify the condition of the received message (filter). The Subscriber will receive only messages with matched filter conditions using the filtered subscription.
+      * The attribute values set and filtered by each microservice, as well as the message formats, are shown in the following figure.
 
         <img src="figures/subscription.jpg" alt="The message's attributes and format" width="930" />
         
