@@ -38,7 +38,7 @@
    3. A **voting record** service.
       * The service uses a **PostgreSQL** server to store the votes.
       * Once a **voting record** is received, it will be stored in a **PostgreSQL** server.
-      * Then, **A vote was recorded successfully** message will be sent to the **voting machine**.
+      * Then, **A vote is recorded successfully** message will be sent to the **voting machine**.
    4. A **Google Pub/sub** for handling the communication between the microservices.
       * No IP or URL of the microservices is needed to exchange data. Only the **topic ID** is required.
       * One topic will be used to exchange the data between the voting machine(s) and the two services.
