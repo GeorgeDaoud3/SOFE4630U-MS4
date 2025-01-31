@@ -115,10 +115,10 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
    cd ~
    git clone https://github.com/GeorgeDaoud3/SOFE4630U-MS4.git
    ```
-2. Upload <a href ="#cred"> the JSON file with GCP credential </a> to the path **~/SOFE4630U-MS4/voting_logger**.
+2. Copy the JSON file containing the key of the service account with the Pub/Sub roles, obtained in milestone 1, to the path **~/SOFE4630U-MS4/voting_logger**.
 3. Containerize the service
-   1. The Dockerfile at [voting_logger/Dockerfile](voting_logger/Dockerfile) contains the instruction to containerize the service.
-      * **Line 1**: uses a Linux with an installed Python 3.9 as the basic image.
+   1. The Dockerfile at [voting_logger/Dockerfile](voting_logger/Dockerfile) contains instructions on containerizing the service.
+      * **Line 1**: uses a Docker image of Linux with a preinstalled Python 3.9 as the basic image.
       * **Line 2**: installs the required Python libraries on the base image.
       * **Line 3**: copies all the JSON files (assumed to be one) from the current directory of the GCP console to the working directory in the base image.
       * **Line 4**: copies the Python file (main.py) from the current directory of the GCP console to the working directory in the base image.
@@ -126,13 +126,13 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
 
       <img src="figures/loggerDockerfile.jpg" alt="Dockerfile for the voting logger service" width="425" />
       
-   2. The name of the artifact repository will prefix the docker image name. Run the following commands after replacing **&lt;REPO full path&gt;** with the <a href="#sofe4630u"> repository full path</a>.
+   2. ii.	The name of the artifact repository will prefix the Docker image name. Run the following commands after replacing **&lt;REPO full path&gt;** with the <a href="#sofe4630u"> repository full path</a>.
       ``` cmd
       REPO=<REPO full path>
       LOGGER_IMAGE=$REPO/logger
       echo $LOGGER_IMAGE
       ```
-   3. Make sure that the path **~/SOFE4630U-MS4/voting_logger** contains the JSON file of the GCP credential, the main.py script, and the Dockerfile.
+   3. Make sure that the path **~/SOFE4630U-MS4/voting_logger** contains the JSON file of the service account key, the main.py script, and the Dockerfile.
       ``` cmd
       cd ~/SOFE4630U-MS4/voting_logger
       ls
@@ -151,17 +151,17 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
       ```
       **Note**: The prefix of the image name is the path into which the repository is to be pushed.
       
-4. Deploy the voting logger service and the Redis server using GKE
+4. Deploy the voting logger service and the Redis server using GKE:
    1. the [voting_logger/logger.yaml](voting_logger/logger.yaml) file contains the deployment instructions. It can be divided into
-      * **Lines 29:61** : deploy the Redis server with a single replica for data consistency using **election** as a password. The most important parameter is the service name at line 32 (**redis**). Other GKE pods will use it as a hostname to access the Redis server.
-        
+      * **Lines 29-61**: deploy the Redis server with a single replica for data consistency using **election** as a password. The service name at line 32 (**redis**) is the most important parameter, as other GKE pods will use it as a hostname to access the Redis server.
+                          
         <img src="figures/loggerk8s1.jpg" alt="Redis deployment" width="400" />
         
-      * **Lines 2:27** : The deployment of three replicas of the service. Four environment variables are defined: REDIS_HOST, GCP_PROJECT, ELECTION_SUB_ID, and TOPIC_NAME. Their values will be accessed by the main.py script, as shown in the following figure. Note that the values **$PROJECT** and **$LOGGER_IMAGE** in line 23 and 17 will be passed to the YAML file before been deployed.
+      * **Lines 2-27**: The deployment of three replicas of the service. Four environment variables are defined: REDIS_HOST, GCP_PROJECT, ELECTION_SUB_ID, and TOPIC_NAME. Their values will be accessed by the main.py script, as shown in the following figure. Note that the values **$PROJECT** and **$LOGGER_IMAGE** in lines 23 and 17 will be passed to the YAML file before deployment.
 
         <img src="figures/loggerk8s2.jpg" alt="the voting logger service deployment" width="1025" />
 
-   2. the following command will substitute **$PROJECT** and **$LOGGER_IMAGE** in the YAML file with the crossponding environment variables and then will deploy the service and the Redis server.
+   2. The following command will substitute **$PROJECT** and **$LOGGER_IMAGE** in the YAML file with the corresponding environment variables and and then the service and the Redis server will be deployed.
       ``` cmd
       REPO=<REPO full path>
       LOGGER_IMAGE=$REPO/logger
@@ -170,7 +170,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
       cd ~/SOFE4630U-MS4/voting_logger
       PROJECT=$PROJECT LOGGER_IMAGE=$LOGGER_IMAGE envsubst < logger.yaml | kubectl apply -f -
       ```
-5. To check the deployment, get the list of pods and make sure that they all available. Then, look for a pod for any of the service replicas and prints its logs.
+5.	To check the deployment, get the pod list and make sure they are all available. Then, look for a pod for any service replicas. You can print the replica logs for debugging purposes.
       ```cmd
       kubectl get pods
       kubectl logs <pod-name>
@@ -179,7 +179,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
    
       <img src="figures/loggerlogs.jpg" alt="the logs of the voting logger service" width="1025" />
       
-6. Finally if you want to stop the service (**Don't run it now**)
+6. Finally, if you want to stop the service (**Don't run it now**)
    ```cmd
    cd ~/SOFE4630U-MS4/voting_logger
    kubectl delete -f logger.yaml
