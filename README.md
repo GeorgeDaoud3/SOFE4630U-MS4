@@ -18,7 +18,7 @@
    
    It consists of:
    1. **A voting machine**
-      * A Python script that will run on a local machine to simulate a real voting machine.]
+      * A Python script that will run on a local machine to simulate a voting machine.]
       * First, it asks for the **election ID** and the **machine ID**.
       * Then, it generates random votes and sends them to a **voting logger** service.
       * Finally, it will wait for a response for 10 sec.
