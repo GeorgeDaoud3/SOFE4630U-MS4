@@ -50,8 +50,7 @@
         
 ## Setting up the GCP Project
 1. Create a new topic in Google Pub/Sub with a default subscription. Name the topic, **election**.
-2. <div id="cred">Create a service account with the Google Pub/Sub admin rule. Create and download a JSON file with the corresponding credentials. ( <b>or use the one already created in MS2</b>)</div>
-3. As each service will be containerized, a docker repository is needed to host the docker images of the **logger** and **recorder** services.
+2. As each service will be containerized, a docker repository is needed to host the docker images of the **logger** and **recorder** services.
    1. Search for Artifact Registry
       
       <img src="figures/artifactRegistry.jpg" alt="Search for Artifact Registry" width="795" />
