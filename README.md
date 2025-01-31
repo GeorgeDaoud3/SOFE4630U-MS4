@@ -57,10 +57,10 @@
    2. In the **repositories** tab, press the + button to create a new repo.
     
       <img src="figures/repositories.jpg" alt="create a new repo" width="905" />
-   3. Name it **sofe4630u** and make sure that the type is set to **Docker**. Set the region to **northamerica-northeast2 (Toronto)**. Finally, press **create**.
+   3. Name it **sofe4630u** and make sure that the type is set to **Docker**. Set the region to **northamerica-northeast2 (Toronto)**. Finally, press **CREATE**.
 
       <img src="figures/createRepository.jpg" alt="create a new repo" width="360" />
-   4. <div id="sofe4630u">open the **sofe4630u** repository and copy the repo path.</div>
+   4. <div id="sofe4630u">open the <b>sofe4630u</b> repository and copy the repo path.</div>
 
       <img src="figures/repoPath.jpg" alt="create a new repo" width="900" />
 
