@@ -34,7 +34,7 @@
          * If the **voter ID** exists, an **Already voted** message will be sent to the voting machine.
          * Otherwise,
             * The **voter ID** will be stored in the Redis database to prevent the voter from repeating the vote.
-            * After excluding the **voter ID** (for voter privacy policy), the voting information will be sent to the **voting record** service.
+            * After excluding the **voter ID** (for voting privacy policy), the voting information will be sent to the **voting record** service.
    3. A **voting record** service.
       * The service uses a **PostgreSQL** server to store the votes.
       * Once a **voting record** is received, it will be stored in a **PostgreSQL** server.
