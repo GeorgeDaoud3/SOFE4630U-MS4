@@ -84,7 +84,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
    
    <img src="figures/logger2.jpg" alt="voting logger script (lines 20:28)" width="550" />
 
-4. **Lines 30-44**: Repeatedly try to connect to the Redis server each second. The service will terminate if the connection isn't established in a minute. 
+4. **Lines 30-44**: Repeatedly try to connect to the Redis server each second. The service will terminate if the connection isn't established in one minute. 
 
    <img src="figures/logger3.jpg" alt="voting logger script (lines 30:44)" width="750" />
    
