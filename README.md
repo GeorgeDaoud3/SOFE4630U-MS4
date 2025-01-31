@@ -18,7 +18,7 @@
    
    It consists of:
    1. **A voting machine**
-      * A Python script that will run on a local machine to simulate a voting machine.
+      * A Python script that simulates a voting machine. It's supposed to run on your local machine.
       * First, it asks for the **election ID** and the **machine ID**.
       * Then, it generates random votes and sends them to a **voting logger** service.
       * Finally, it will wait for a response for 10 seconds.
@@ -54,10 +54,10 @@
    1. Search for Artifact Registry
       
       <img src="figures/artifactRegistry.jpg" alt="Search for Artifact Registry" width="795" />
-   2. In the **repositories** tab, press the + button to create a new repo.
+   2. Press the + button to create a new repo within the **repositories** tab.
     
       <img src="figures/repositories.jpg" alt="create a new repo" width="905" />
-   3. Name it **sofe4630u** and make sure that the type is set to **Docker**. Set the region to **northamerica-northeast2 (Toronto)**. Finally, press **CREATE**.
+   3. Name it **sofe4630u** and ensure that the type is set to **Docker**. Set the region to **northamerica-northeast2 (Toronto)**. Finally, press **CREATE**.
 
       <img src="figures/createRepository.jpg" alt="create a new repo" width="360" />
    4. <div id="sofe4630u">open the <b>sofe4630u</b> repository and copy the repo path.</div>
