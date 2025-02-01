@@ -116,7 +116,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
    cd ~
    git clone https://github.com/GeorgeDaoud3/SOFE4630U-MS4.git
    ```
-2. Copy the JSON file containing the key of the service account created <a href="#serviceAccountKey">before<\a>, to the path **~/SOFE4630U-MS4/voting_logger**.
+2. Copy the JSON file containing the key of the service account created <a href="#serviceAccountKey">before</a>, to the path **~/SOFE4630U-MS4/voting_logger**.
 3. Containerize the service
    1. The Dockerfile at [voting_logger/Dockerfile](voting_logger/Dockerfile) contains instructions on containerizing the service.
       * **Line 1**: uses a Docker image of Linux with a preinstalled Python 3.9 as the basic image.
