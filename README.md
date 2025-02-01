@@ -24,7 +24,7 @@
       * Finally, it will wait for a response for 10 seconds.
       * There are three expected responses: 
          1. **Already voted** if a vote with the same **voter ID** was processed before.
-         2. **A vote is recorded successfully**.
+         2. A **successful** message if the vote is recorded successfully.
          3. **Time out** if the vote processing takes much longer than expected (10 sec).
       * You can run multiple script instances but with different **machine ID**s. 
    2. A **voting logger** service.
@@ -38,7 +38,7 @@
    3. A **voting record** service.
       * The service uses a **PostgreSQL** server to store the votes.
       * Once a **voting record** is received, it will be stored in a **PostgreSQL** server.
-      * Then, **A vote is recorded successfully** message will be sent to the **voting machine**.
+      * Then, A **successful** message will be sent to the **voting machine**.
    4. A **Google Pub/sub** for handling the communication between the microservices.
       * No IP or URL of the microservices is needed to exchange data. Only the **topic ID** is required.
       * One topic will be used to exchange the data between the voting machine(s) and the two services.
