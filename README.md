@@ -116,7 +116,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
    cd ~
    git clone https://github.com/GeorgeDaoud3/SOFE4630U-MS4.git
    ```
-2. Copy the JSON file containing the key of the service account created <a href="#serviceAccountKey">before</a>, to the path **~/SOFE4630U-MS4/voting_logger**.
+2. Copy the JSON file that contains the key of the service account created <a href="#serviceAccountKey">before</a>, to the path **~/SOFE4630U-MS4/voting_logger**.
 3. Containerize the service
    1. The Dockerfile at [voting_logger/Dockerfile](voting_logger/Dockerfile) contains instructions on containerizing the service.
       * **Line 1**: uses a Docker image of Linux with a preinstalled Python 3.9 as the basic image.
@@ -190,36 +190,36 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
 
 ### The Service Python Script
 
-This subsection will go through the Python script at [voting_record/main.py](voting_record/main.py). It's similar to that used for the logger service except
+The Python script of the service can be found at [voting_record/main.py](voting_record/main.py). It's similar to that used for the logger service, except
 
-1. **Lines 15** : use the values of predefined environment variables to set the values of the postgres_host for the PostgreSQL server.
+1. **Line 15**: uses the values of predefined environment variables to set the values of the postgres_host for the PostgreSQL server.
    
    <img src="figures/recorder1.jpg" alt="voting recorder script (lines 14:18)" width="640" />
 
-2. **Lines 30: 48** : Repeatedly try to connect to the PostgreSQL server each ten seconds. The service will terminate if the connection can't be established in ten minutes. 
+2. **Lines 30-48**: repeatedly try to connect to the PostgreSQL server every ten seconds. The service will terminate if the connection isn't established in ten minutes. 
 
    <img src="figures/recorder2.jpg" alt="voting recorder script (lines 30:48)" width="1000" />
    
-5. **Lines 84: 106**: create a subscription and use it to subscribe to the topic using the filter for the subscription (**function="record vote"**).
+5. **Lines 84-106**: create a subscription and use it to subscribe to the topic using the filter for the subscription (**function="record vote"**).
    
    <img src="figures/recorder3.jpg" alt="voting recorder script (lines 84:106)" width="1080" />
 
-6. **Lines 54: 82**: The callback function to handle the received message.
-   1. **Lines 65:71** : store the recieved message in the PostgreSQL server.
-   2. **Lines 73:79** : a **successful** message will be produced with attributes (**function**="result",**machineID**=...) to be received by the **voting machine**
+6. **Lines 54-82**: The callback function that handles the received message.
+   1. **Lines 65-71**: store the recieved message in the PostgreSQL server.
+   2. **Lines 73-79**: a **successful** message will be produced with attributes (**function**="result", **machineID**=...) to be received by the **voting machine**
 
    <img src="figures/recorder4.jpg" alt="voting recorder script (lines 54:82)" width="1300" />
    
 ### The Deployment of the Service
 
-1. Upload <a href ="#cred"> the JSON file with GCP credential </a> to the path **~/SOFE4630U-MS4/voting_record**.
+1. Copy the JSON file that contains the key of the service account created <a href="#serviceAccountKey">before</a>, to the path **~/SOFE4630U-MS4/voting_record**.
 2. Containerize the service
    1. The Dockerfile at [voting_record/Dockerfile](voting_record/Dockerfile) looks like the Dockerfile for the logger service except
       **Line 2: ** installs the psycopg2 which is a PostgreSQL client Python Library
       
       <img src="figures/recordDockerfile.jpg" alt="Dockerfile for the voting recorder service" width="450" />
       
-   2. Run the following commands after replacing **&lt;REPO full path&gt;** by the <a href="#sofe4630u"> repository full path</a> to generate the full name of the service image.
+   2. Run the following commands after replacing **&lt;REPO full path&gt;** with the <a href="#sofe4630u"> repository full path</a> to generate the full name of the service image.
       ``` cmd
       REPO=<REPO full path>
       RECORDER_IMAGE=$REPO/recorder
@@ -233,13 +233,13 @@ This subsection will go through the Python script at [voting_record/main.py](vot
 
       <img src="figures/recorderls.jpg" alt="Dockerfile for the voting recorder service" width="850" />
       
-   4. Execute the instruction in the Dockerfile to generate the image and push it to the artifact repository. This is an alternative to the **docker build** and **docker push** that were used in the logger service.
+   4. Execute the instruction in the Dockerfile to generate the image and push it to the artifact repository. This is an alternative to the **docker build** and **docker push** used in building the logger service.
       ``` cmd
       cd ~/SOFE4630U-MS4/voting_record
       gcloud builds submit -t $RECORDER_IMAGE 
       ```
 3. Also, we need to create a Docker image for the PostgreSQL server to create an initial table within the server.
-   1. To create an initial table, we must execute a SQL statement found at [voting_record/postgres/CreateTable.sql](voting_record/postgres/CreateTable.sql) at the docker container during initialization. It's much like standard SQL except for the keyword, **serial**, which will auto-increment the values in the **id** column.
+   1. To create an initial table, we must execute an SQL statement found at [voting_record/postgres/CreateTable.sql](voting_record/postgres/CreateTable.sql) in the docker container during initialization. It's much like standard SQL except for the keyword **serial**, which will auto-increment the values in the **id** column.
       
       <img src="figures/postgres_table_sql.jpg" alt="PostgreSQL script to create a table" width="390" />
      
@@ -249,7 +249,7 @@ This subsection will go through the Python script at [voting_record/main.py](vot
     
       <img src="figures/postgresDockerfile.jpg" alt="Dockerfile for the PostgreSQL server" width="500" />
 
-   3. Now, let's create and push the Docker image to the repository.
+   3. To create and push the Docker image to the repository.
        ``` cmd
       REPO=<REPO full path>
       POSTGRES_IMAGE=$REPO/postgres:election
@@ -260,15 +260,15 @@ This subsection will go through the Python script at [voting_record/main.py](vot
       ```
 4. Deploy the voting recorder service and the PostgreSQL server using GKE
    1. the [voting_record/recorder.yaml](voting_record/recorder.yaml) file contains the deployment instructions. It can be divided into
-      * **Lines 27:65** : deploy the PostgreSQL server with a single replica for data consistency using **admin** as a user, **adminpassword** as a password, and **election** as an initial database. The most important parameter is the service name at line 31 (**postgres**). Other GKE pods will use it as a hostname to access the PostgreSQL server. Also, note that an environment variable will replace **$RECORDER_IMAGE** at line 53 before deploying.
+      * **Lines 27-65**: deploy the PostgreSQL server with a single replica for data consistency using **admin** as a user, **adminpassword** as a password, and **election** as an initial database. The service name at line 31 (**postgres**) is the most important parameter, as other GKE pods will use it as a hostname to access the PostgreSQL server. Also, note that an environment variable will replace **$RECORDER_IMAGE** at line 53 before deploying.
         
         <img src="figures/recorderk8s1.jpg" alt="PostgreSQL deployment" width="400" />
         
-      * **Lines 1:26** : The deployment of three replicas of the service. Four environment variables are defined: POSTGRES_HOST, GCP_PROJECT, ELECTION_SUB_ID, and TOPIC_NAME. Their values will be accessed by the main.py script, as shown in the following figure. Note that the values **$PROJECT** and **$RECORDER_IMAGE** in line 23 and 16 will be passed to the YAML file before been deployed.
+      * **Lines 1-26**: The deployment of three replicas of the service. Four environment variables are defined: POSTGRES_HOST, GCP_PROJECT, ELECTION_SUB_ID, and TOPIC_NAME. Their values will be accessed by the main.py script, as shown in the following figure. Note that the values **$PROJECT** and **$RECORDER_IMAGE** in lines 23 and 16 will be passed to the YAML file before deployment.
 
         <img src="figures/recorderk8s2.jpg" alt="the voting logger service deployment" width="1130" />
 
-   2. the following command will substitute **$PROJECT**, **$POSTGRES_IMAGE**, and **$RECORDER_IMAGE** in the YAML file with the crossponding environment variables and then will deploy the service and the PostgreSQL server.
+   2. the following command will substitute **$PROJECT**, **$POSTGRES_IMAGE**, and **$RECORDER_IMAGE** in the YAML file with the corresponding environment variables and then deploy the service and the PostgreSQL server.
       ``` cmd
       REPO=<REPO full path>
       RECORDER_IMAGE=$REPO/recorder
@@ -278,7 +278,7 @@ This subsection will go through the Python script at [voting_record/main.py](vot
       cd ~/SOFE4630U-MS4/voting_record
       POSTGRES_IMAGE=$POSTGRES_IMAGE PROJECT=$PROJECT RECORDER_IMAGE=$RECORDER_IMAGE envsubst < recorder.yaml | kubectl apply -f -
       ```
-6. To check the deployment, get the list of pods and make sure that they all available. Then, look for a pod for any of the service replicas and prints its logs.
+6. To check the deployment, get the pod list and make sure they are all available. Then, look for any pod of the service replicas and print its logs. 
       ```cmd
       kubectl get pods
       kubectl logs <pod-name>
@@ -287,7 +287,7 @@ This subsection will go through the Python script at [voting_record/main.py](vot
    
       <img src="figures/recorderlogs.jpg" alt="the logs of the voting logger service" width="735" />
       
-7. Finally if you want to stop the service (**Don't run it now**)
+7. Finally, if you want to stop the service (**Don't run it now**)
    ```cmd
    cd ~/SOFE4630U-MS4/voting_record
    kubectl delete -f recorder.yaml
