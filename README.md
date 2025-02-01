@@ -332,7 +332,7 @@ In this section, we will go through its Python code and run it. The main program
 
 ### Run The Python Script
 
-1. Edit the **main.py** within the **voting machine** folder to set the project ID with your project ID in line 17.
+1. Edit the **main.py** within the **voting machine** folder to set the value of the projectID variable in line 17 with your project ID.
 2. Copy the JSON file that contains the key of the service account created <a href="#serviceAccountKey">before</a>, to the path as the **main.py** file.
 3. Run the Python script
    ```cmd
