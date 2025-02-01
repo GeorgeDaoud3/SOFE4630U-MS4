@@ -278,7 +278,7 @@ The Python script of the service can be found at [voting_record/main.py](voting_
       cd ~/SOFE4630U-MS4/voting_record
       POSTGRES_IMAGE=$POSTGRES_IMAGE PROJECT=$PROJECT RECORDER_IMAGE=$RECORDER_IMAGE envsubst < recorder.yaml | kubectl apply -f -
       ```
-6. To check the deployment, get the pod list and make sure they are all available. Then, look for any pod of the service replicas and print its logs. 
+6. To check the deployment, get the pod list and ensure they are all available. Then, look for any pod of the service replicas and print its logs. 
       ```cmd
       kubectl get pods
       kubectl logs <pod-name>
@@ -298,42 +298,42 @@ The Python script of the service can be found at [voting_record/main.py](voting_
 ### The Service Python Script
 
 This script is assumed to run on your local computer, but you can run it on the GCP console. Thus, there is no need for containerization.
-In this section, we will go through its Python code and run it. The main program will generate random votes and send them through Google Pub/Sub topic. A subscriber to the topic will subscribe to messages with the function attribute of the value "result" and a matched the machineID attribute. It will wait for a response for the sent vote or signal a time-out. A thread will be created for the subscriber to prevent it from blocking the main program. The script can be broken up into:
-* **Lines 10:22** : initial the needed variables. Note that you need to edit line 17 to add your project ID.
+In this section, we will go through its Python code and run it. The main program will generate random votes and send them through Google Pub/Sub topic. A subscriber to the topic will subscribe to messages with the function attribute of the value "result" and a matched machineID attribute. It will wait for a response for the sent vote or signal a time-out. A thread will be created for the subscriber to prevent it from blocking the main program. The script can be broken up into:
+* **Lines 10-22**: initial the needed variables. Note that you need to edit line 17 to add your project ID.
   
    <img src="figures/votingMachine1.jpg" alt="the script of the voting machine (lines 10:22) " width="700" />
    
-*  **Lines 49:62** : define the subscriber and producer and the corresponding variables
+*  **Lines 49-62**: define the subscriber and producer and the corresponding variables
   
    <img src="figures/votingMachine2.jpg" alt="the script of the voting machine (lines 49:62) " width="900" />
    
-*  **Lines 89:113** : the main thread code that iteratively generates a random vote, produces it to the topic, sets the **messageReceived** flag to False, and finally, waits until the subscriber thread changes it to **True**. Otherwise, a time-out message will be printed. Note that the voterId is limited to 100 so repeated voter IDs are more likely to happen. You can increase the limit.
+*  **Lines 89-113**: the main thread code that iteratively generates a random vote, produces it to the topic, sets the **messageReceived** flag to False, and finally, waits until the subscriber thread changes it to **True**. Otherwise, a time-out message will be printed. Note that the voterId is limited to 100, so repeated voter IDs are more likely to happen. You can increase the limit.
   
    <img src="figures/votingMachine3.jpg" alt="the script of the voting machine (lines 89:113) " width="975" />
    
-*  **Lines 86:87** : create a thread that runs the **thread_function** function.
+*  **Lines 86-87**: create a thread that runs the **thread_function** function.
   
    <img src="figures/votingMachine4.jpg" alt="the script of the voting machine (lines 86:87) " width="470" />
    
-*  **Lines 68:83** : define the **thread_function** function that creates a subscription if doesn't exist. The subscription is configured to filter messages with the attributes of function="result" and a matched **machineID**. It also creates a subscriber with a callback function to handle received messages.
+*  **Lines 68-83**: define the **thread_function** function that creates a subscription if it doesn't exist. The subscription is configured to filter messages with the attributes of function="result" and a matched **machineID**. It also creates a subscriber with a callback function to handle received messages.
   
    <img src="figures/votingMachine5.jpg" alt="the script of the voting machine (lines 68:83) " width="940" />
    
-*  **Lines 32:47** : define the **callback** function process the recieved nessage. If the message UUID matches the last send UUID, **messageRceived** is set to True.
+*  **Lines 32-47**: define the **callback** function that processes the received messages. If the message UUID matches the last send UUID, **messageRceived** is set to True.
   
    <img src="figures/votingMachine6.jpg" alt="the script of the voting machine (lines 32:47) " width="790" />
    
 *  The interaction between the main thread and the callback function is summarized as
    1. The main thread creates the vote message, saves the UUID of the message as **last_uuid**, and sets the **messageReceived** flag to False.
-   2. The callback function checks the UUID of the received messages. if any matches **last_uuid**, the **messageReceived** flag is set to True.
+   2. The callback function checks the UUID of the received messages. If any matches **last_uuid**, the **messageReceived** flag is set to True.
    3. The main thread waits until the **messageReceived** flag is set to True. If no answer is received in 10 seconds, A timeout message is printed
       
    <img src="figures/votingMachine.jpg" alt="the script of the voting machine (lines 32:47) " width="790" />
 
 ### Run The Python Script
 
-1. Edit the **main.py** withing the **voting machine** folder to set the project ID with your project ID in line 17.
-2. Upload <a href ="#cred"> the JSON file with GCP credential </a> to the same path as the **main.py** file.
+1. Edit the **main.py** within the **voting machine** folder to set the project ID with your project ID in line 17.
+2. Copy the JSON file that contains the key of the service account created <a href="#serviceAccountKey">before</a>, to the path as the **main.py** file.
 3. Run the Python script
    ```cmd
    python main.py
