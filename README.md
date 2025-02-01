@@ -50,7 +50,8 @@
         
 ## Setting up the GCP Project
 1. Create a new topic in Google Pub/Sub with a default subscription. Name the topic, **election**.
-2. As each service will be containerized, a docker repository is needed to host the docker images of the **logger** and **recorder** services.
+2. <div id='serviceAccountKey'> Create a new Service account key, and grant to it the role of Pub/Sub Admin. Download a JSON file for that key (similar to milestone 1).</div>
+3. As each service will be containerized, a docker repository is needed to host the docker images of the **logger** and **recorder** services.
    1. Search for Artifact Registry
       
       <img src="figures/artifactRegistry.jpg" alt="Search for Artifact Registry" width="795" />
@@ -115,7 +116,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
    cd ~
    git clone https://github.com/GeorgeDaoud3/SOFE4630U-MS4.git
    ```
-2. Copy the JSON file containing the key of the service account with the Pub/Sub roles, obtained in milestone 1, to the path **~/SOFE4630U-MS4/voting_logger**.
+2. Copy the JSON file containing the key of the service account created <a href="#serviceAccountKey">before<\a>, to the path **~/SOFE4630U-MS4/voting_logger**.
 3. Containerize the service
    1. The Dockerfile at [voting_logger/Dockerfile](voting_logger/Dockerfile) contains instructions on containerizing the service.
       * **Line 1**: uses a Docker image of Linux with a preinstalled Python 3.9 as the basic image.
@@ -126,7 +127,7 @@ This subsection will go through the Python script at [voting_logger/main.py](vot
 
       <img src="figures/loggerDockerfile.jpg" alt="Dockerfile for the voting logger service" width="425" />
       
-   2. ii.	The name of the artifact repository will prefix the Docker image name. Run the following commands after replacing **&lt;REPO full path&gt;** with the <a href="#sofe4630u"> repository full path</a>.
+   2. The name of the artifact repository will prefix the Docker image name. Run the following commands after replacing **&lt;REPO full path&gt;** with the <a href="#sofe4630u"> repository full path</a>.
       ``` cmd
       REPO=<REPO full path>
       LOGGER_IMAGE=$REPO/logger
