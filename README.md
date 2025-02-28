@@ -347,21 +347,7 @@ The output would be similar to
 
 ## Design
 
-In milestone 2, you designed a Dataflow job to preprocess the smart meter measurements. In this milestone, you will implement the same preprocessing but using microservices communicating using a single Google Pub/sub-topic.
-
-The list of microservices are
-1. FilterReading: Eliminate records with missing measurements (containing None).
-2. ConvertReading: convert the pressure from kPa to psi and the temperature from Celsius to Fahrenheit using the following equations
-
-𝑃(𝑝𝑠𝑖) = 𝑃(𝑘𝑃𝑎)/6.895
-
-𝑇(𝐹) = 𝑇(𝐶)∗1.8+32
-
-Also, a [BigQuerry subscription](https://cloud.google.com/pubsub/docs/bigquery) (similar to Kafka Connector) should be implemented to store the results in a bigQuerry Table automatically.
-
-**Note**: the microservices in the design part is simpler than those in the voting system as they need no datastorage
-
-<img src="figures/design.jpg" alt="the design architecture" width="640" />
+TBA
 
 ## Discussion:
 
