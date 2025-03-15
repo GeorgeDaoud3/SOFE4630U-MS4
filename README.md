@@ -347,9 +347,9 @@ The output would be similar to
 
 ## Design
 
-As a final step to solve the occluded pedestrian problem, the [dataset](https://github.com/GeorgeDaoud3/SOFE4630U-Design/blob/main/README.md#the-dataset-description) was updated to include more information. Seven microservices are designed to solve the problem. The description of the microservices is given at [the milestone 4 section](https://github.com/GeorgeDaoud3/SOFE4630U-Design/blob/main/README.md#milestone-4).
+The [dataset](https://github.com/GeorgeDaoud3/SOFE4630U-Design/blob/main/README.md#the-dataset-description) was updated to include more information for the final step to solve the occluded pedestrian problem. Seven microservices are designed to solve the problem. The description of the microservices is given in [the milestone 4 section](https://github.com/GeorgeDaoud3/SOFE4630U-Design/blob/main/README.md#milestone-4).
 
-Note that the microservices logic is already implmented. Your task is to update them to only establish the communication between the microservices ysing a shared bus and to create a producer and consumer.
+Note that the microservices logic has already been implemented. Your task is to update them only to establish the communication between the microservices using a shared bus and to create a producer and consumer.
 
 ## Discussion:
 
