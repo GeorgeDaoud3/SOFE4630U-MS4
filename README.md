@@ -347,7 +347,9 @@ The output would be similar to
 
 ## Design
 
-TBA
+As a final step to solve the occluded pedestrian problem, the [dataset] (https://github.com/GeorgeDaoud3/SOFE4630U-Design/blob/main/README.md#the-dataset-description) was updated to include more information. Seven microservices are designed to solve the problem. The description of the microservices is given at [the milestone 4 section] (https://github.com/GeorgeDaoud3/SOFE4630U-Design/blob/main/README.md#milestone-4).
+
+Note that the microservices logic is already implmented. Your task is to update them to only establish the communication between the microservices ysing a shared bus and to create a producer and consumer.
 
 ## Discussion:
 
@@ -357,5 +359,5 @@ Compare the advantages and disadvantages of using Dataflow vs microservices in p
 
 * A report that includes the discussion part. It should also describe the design part and the steps to deploy and execute it.
 * An audible video of about 4 minutes showing the deployment and execution of the voting system.
-* An audible video of about 4 minutes showing the deployment and execution of the design part.
-* The scripts of the design part.
+* An audible video of about 5 minutes showing the deployment and execution of the design part showing samples from the results .
+* A Github link includes the scripts of the design part.
