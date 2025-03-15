@@ -359,5 +359,5 @@ Compare the advantages and disadvantages of using Dataflow vs microservices in p
 
 * A report that includes the discussion part. It should also describe the design part and the steps to deploy and execute it.
 * An audible video of about 4 minutes showing the deployment and execution of the voting system.
-* An audible video of about 5 minutes showing the deployment and execution of the design part showing samples from the results .
-* A Github link includes the scripts of the design part.
+* An audible video of about 5 minutes showing the deployment and execution of the design part showing samples from the results.
+* A GitHub link includes the scripts of the design part.
